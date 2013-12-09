@@ -15,59 +15,12 @@
 #
 #
 #
-fs = require('fs')
-path = require('path')
 
-#
-#  _code = ''
-#  for $name in [
-#    "source/core.js"
-#    "source/extensions.js"
-#    "source/class.js"
-#    "source/tag.js"
-#    "source/block.js"
-#    "source/document.js"
-#    "source/strainer.js"
-#    "source/context.js"
-#    "source/template.js"
-#    "source/variable.js"
-#    "source/condition.js"
-#    "source/drop.js"
-#    "source/default_tags.js"
-#    "source/default_filters.js"
-#    "etc/strftime.js"
-#    "etc/split.js"
-#  ]
-#    _code += String(fs.readFileSync(path.resolve(__dirname, '..', $name)))
-#
-#  Liquid = do($lang = 'en') ->
-#    document =
-#      getElementsByTagName: ($name) ->
-#        if $name is 'html' then [lang: $lang] else []
-#    eval _code
-#    Liquid
-#
-#else
-#  Liquid = require("../lib/liquid.coffee")
-#
-_js = true
-if _js
 
-  Liquid = do($lang = 'en') ->
-
-    document =
-      getElementsByTagName: ($name) ->
-        if $name is 'html' then [lang: $lang] else []
-    #(require("../lib/liquid.coffee"))(document)
-    require "../lib/liquid.coffee"
-
-else
-
-  Liquid = require("../lib/liquid.coffee")
-
+Liquid = require("../liquid.coffee")
 
 render = ($src, $ctx) ->
-  Liquid.parse($src).renderWithErrors($ctx)
+  Liquid.Template.parse($src).renderWithErrors($ctx)
 
 #? -------------------------------------------------------------------+
 describe 'liquid', ->
@@ -304,26 +257,26 @@ describe 'liquid', ->
   describe "Testing tags...", ->
 
     it "{% assign varname = value %}", ->
-      tmpl = Liquid.parse("{% assign myVar = 'VALUE' %}.{{ myVar }}.");
+      tmpl = Liquid.Template.parse("{% assign myVar = 'VALUE' %}.{{ myVar }}.");
       tmpl.render().should.equal '.VALUE.'
 
-      tmpl = Liquid.parse("{% assign myVar = 10 %}.{{ myVar }}.");
+      tmpl = Liquid.Template.parse("{% assign myVar = 10 %}.{{ myVar }}.");
       tmpl.render().should.equal '.10.'
 
-      tmpl = Liquid.parse("{% assign myVar = 5.5 %}.{{ myVar }}.");
+      tmpl = Liquid.Template.parse("{% assign myVar = 5.5 %}.{{ myVar }}.");
       tmpl.render().should.equal '.5.5.'
 
-      tmpl = Liquid.parse("{% assign myVar = (1..3) %}.{{ myVar }}.");
+      tmpl = Liquid.Template.parse("{% assign myVar = (1..3) %}.{{ myVar }}.");
       tmpl.render().should.equal ".1,2,3."
 
       # Also make sure that nothing leaks out...
-      tmpl = Liquid.parse("{% assign myVar = 'foo' %}");
+      tmpl = Liquid.Template.parse("{% assign myVar = 'foo' %}");
       tmpl.render().should.equal ''
 
 
     it "{% capture varname %} content {% endcapture %}", ->
       src = "{% capture myContent %}Good 'old content!{% endcapture %}Before {{ myContent }}";
-      Liquid.parse(src).render().should.equal "Before Good 'old content!"
+      Liquid.Template.parse(src).render().should.equal "Before Good 'old content!"
 
 
     it "{% case conditionLeft %} {% when conditionRight %} {% else %} {% endcase %}", ->
@@ -331,7 +284,7 @@ describe 'liquid', ->
           {% case testVar %}
           {% when 1 %} One!{% when 2 %} Two!{% when 'test' %} Test!{% else %} Got me{% endcase %}
         """
-      tmpl = Liquid.parse(src)
+      tmpl = Liquid.Template.parse(src)
 
       tmpl.render({ testVar:1 }).should.equal " One!"
       tmpl.render({ testVar:2 }).should.equal " Two!"
@@ -380,11 +333,14 @@ describe 'liquid', ->
       .should.equal "12"
 
     it "{% include 'templateName' %}", ->
-      Liquid.readTemplateFile = (path) ->
-        if(path == 'simple')
-          return "simple INCLUDED!";
-        else
-          return "{{ data }} INCLUDED!";
+
+      Liquid.Template.fileSystem =
+        root: __dirname
+        readTemplateFile: (path) ->
+          if(path == 'simple')
+            return "simple INCLUDED!";
+          else
+            return "{{ data }} INCLUDED!";
 
       render("{% include 'simple' %}").should.equal "simple INCLUDED!"
       render("{% include 'variable' with data:'Data' %}").should.equal "Data INCLUDED!"
