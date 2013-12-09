@@ -1,5 +1,5 @@
 {
-  "name": "liquid.coffee",
+  "name": "huginn-liquid",
   "version": "0.0.1",
   "description": "Port of Liquid.js to CoffeeScript",
   "keywords": [
