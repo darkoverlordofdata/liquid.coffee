@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #| liquid.coffee
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012
+#| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
 #|
 #| This file is a part of liquid.coffee
@@ -40,8 +40,6 @@ module.exports = class Liquid
   @PartialTemplateParser       = ///#{@TagStart.source}.*?#{@TagEnd.source}|#{@VariableStart.source}.*?#{@VariableIncompleteEnd.source}///
   @TemplateParser              = ///(#{@PartialTemplateParser.source}|#{@AnyStartingTag.source})///
   @VariableParser              = ///\[[^\]]+\]|#{@VariableSegment.source}+\??///
-
-  console.log @QuotedFragment
 
   @readTemplateFile = (path) ->
     throw ("This liquid context does not allow includes.")
