@@ -13,24 +13,22 @@
 #
 # Liquid Templates
 #
-Block = require('../block')
-Template = require('../template')
-Utils = require('./utils')
+module.exports = (Liquid) ->
 
-module.exports = class Capture extends Block
+  class Capture extends Liquid.Block
 
-  tagSyntax: /(\w+)/
-  constructor: (tagName, markup, tokens) ->
-    parts = markup.match(@tagSyntax)
-    if parts
-      @to = parts[1]
-    else
-      throw ("Syntax error in 'capture' - Valid syntax: capture [var]")
-    super tagName, markup, tokens
+    tagSyntax: /(\w+)/
+    constructor: (tagName, markup, tokens) ->
+      parts = markup.match(@tagSyntax)
+      if parts
+        @to = parts[1]
+      else
+        throw ("Syntax error in 'capture' - Valid syntax: capture [var]")
+      super tagName, markup, tokens
 
-  render: (context) ->
-    output = super(context)
-    context.set @to, Utils.flatten([output]).join("")
-    ""
+    render: (context) ->
+      output = super(context)
+      context.set @to, Liquid.Utils.flatten([output]).join("")
+      ""
 
-Template.registerTag "capture", Capture
+  Liquid.Template.registerTag "capture", Capture

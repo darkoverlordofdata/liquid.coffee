@@ -13,23 +13,22 @@
 #
 # Liquid Templates
 #
-Tag = require('../tag')
-Template = require('../template')
+module.exports = (Liquid) ->
 
-module.exports = class Assign extends Tag
+  class Assign extends Liquid.Tag
 
-  tagSyntax: /((?:\(?[\w\-\.\[\]]\)?)+)\s*=\s*((?:"[^"]+"|'[^']+'|[^\s,|]+)+)/
-  constructor: (tagName, markup, tokens) ->
-    parts = markup.match(@tagSyntax)
-    if parts
-      @to = parts[1]
-      @from = parts[2]
-    else
-      throw ("Syntax error in 'assign' - Valid syntax: assign [var] = [source]")
-    super tagName, markup, tokens
+    tagSyntax: /((?:\(?[\w\-\.\[\]]\)?)+)\s*=\s*((?:"[^"]+"|'[^']+'|[^\s,|]+)+)/
+    constructor: (tagName, markup, tokens) ->
+      parts = markup.match(@tagSyntax)
+      if parts
+        @to = parts[1]
+        @from = parts[2]
+      else
+        throw ("Syntax error in 'assign' - Valid syntax: assign [var] = [source]")
+      super tagName, markup, tokens
 
-  render: (context) ->
-    context.scopes[context.scopes.length-1][@to.toString()] = context.get(@from)
-    ""
+    render: (context) ->
+      context.scopes[context.scopes.length-1][@to.toString()] = context.get(@from)
+      ""
 
-Template.registerTag "assign", Assign
+  Liquid.Template.registerTag "assign", Assign

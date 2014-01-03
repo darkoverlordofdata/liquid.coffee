@@ -13,14 +13,13 @@
 #
 # Liquid Templates
 #
-Block = require('./block')
+module.exports = (Liquid) ->
 
-module.exports = class Document extends Block
+  class Document extends Liquid.Block
 
-  constructor: (tokens) ->
-    @blockDelimiter = [] # [], really?
-    @parse tokens
+    constructor: (tokens) ->
+      @blockDelimiter = [] # [], really?
+      @parse tokens
 
-  assertMissingDelimitation: ->
-
-# Documents don't need to assert this...
+    assertMissingDelimitation: ->
+    # Documents don't need to assert this...

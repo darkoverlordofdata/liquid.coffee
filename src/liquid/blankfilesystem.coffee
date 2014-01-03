@@ -13,6 +13,8 @@
 #
 # Liquid Templates
 #
-module.exports = class BlankFileSystem
-  readTemplateFile: (path) ->
-    throw ("This liquid context does not allow includes.")
+module.exports = (Liquid) ->
+
+  class BlankFileSystem
+    readTemplateFile: (path) ->
+      throw ("This liquid context does not allow includes.")

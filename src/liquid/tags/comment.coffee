@@ -13,10 +13,9 @@
 #
 # Liquid Templates
 #
-Block = require('../block')
-Template = require('../template')
+module.exports = (Liquid) ->
 
-module.exports = class Comment extends Block
-  render: (context) ->
-    ""
-Template.registerTag "comment", Comment
+  class Comment extends Liquid.Block
+    render: (context) ->
+      ""
+  Liquid.Template.registerTag "comment", Comment

@@ -13,17 +13,19 @@
 #
 # Liquid Templates
 #
-class Drop
+module.exports = (Liquid) ->
 
-  setContext: (context) ->
-    @context = context
+  class Drop
 
-  beforeMethod: (method) ->
+    setContext: (context) ->
+      @context = context
 
-  invokeDrop: (method) ->
-    results = @beforeMethod()
-    results = this[method].apply(this)  if not results and (method of this)
-    results
+    beforeMethod: (method) ->
 
-  hasKey: (name) ->
-    true
+    invokeDrop: (method) ->
+      results = @beforeMethod()
+      results = this[method].apply(this)  if not results and (method of this)
+      results
+
+    hasKey: (name) ->
+      true

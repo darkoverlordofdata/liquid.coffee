@@ -15,6 +15,7 @@
 #
 
 fs = require('fs')
+util = require 'util'
 {exec} = require "child_process"
 
 #  --------------------------------------------------------------------
@@ -37,4 +38,27 @@ task "test", "run tests", ->
 
 
 #  --------------------------------------------------------------------
+
+#
+# Build Source
+#
+#
+task 'build:src', 'Build the coffee source', ->
+
+  #
+  # Build the AST lib
+  #
+  exec 'coffee -o lib -c src', ($err, $stdout, $stderr) ->
+
+    util.log $err if $err if $err?
+    util.log $stderr if $stderr if $stderr?
+    util.log $stdout if $stdout if $stdout?
+    util.log 'ok' unless $stdout?
+
+    exec 'browserify --debug lib/liquid.js | uglifyjs > liquid.js', ($err, $stdout, $stderr) ->
+
+      util.log $err if $err if $err?
+      util.log $stderr if $stderr if $stderr?
+      util.log $stdout if $stdout if $stdout?
+      util.log 'ok' unless $stdout?
 

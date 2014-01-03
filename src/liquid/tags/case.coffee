@@ -13,70 +13,65 @@
 #
 # Liquid Templates
 #
+module.exports = (Liquid) ->
 
-Block = require('../block')
-Condition = require('../condition')
-ElseCondition = require('../elsecondition')
-Template = require('../template')
-Utils = require('./utils')
+  class Case extends Liquid.Block
 
-module.exports = class Case extends Block
-
-  tagSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)/
-  tagWhenSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)(?:(?:\s+or\s+|\s*\,\s*)("[^"]+"|'[^']+'|[^\s,|]+.*))?/
-  constructor: (tagName, markup, tokens) ->
-    @blocks = []
-    @nodelist = []
-    parts = markup.match(@tagSyntax)
-    if parts
-      @left = parts[1]
-    else
-      throw ("Syntax error in 'case' - Valid syntax: case [condition]")
-    super tagName, markup, tokens
-
-  unknownTag: (tag, markup, tokens) ->
-    switch tag
-      when "when"
-        @recordWhenCondition markup
-      when "else"
-        @recordElseCondition markup
+    tagSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)/
+    tagWhenSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)(?:(?:\s+or\s+|\s*\,\s*)("[^"]+"|'[^']+'|[^\s,|]+.*))?/
+    constructor: (tagName, markup, tokens) ->
+      @blocks = []
+      @nodelist = []
+      parts = markup.match(@tagSyntax)
+      if parts
+        @left = parts[1]
       else
-        super tag, markup, tokens
+        throw ("Syntax error in 'case' - Valid syntax: case [condition]")
+      super tagName, markup, tokens
 
-  render: (context) ->
-    output = []
-    execElseBlock = true
+    unknownTag: (tag, markup, tokens) ->
+      switch tag
+        when "when"
+          @recordWhenCondition markup
+        when "else"
+          @recordElseCondition markup
+        else
+          super tag, markup, tokens
 
-    context.stack =>
-      i = 0
+    render: (context) ->
+      output = []
+      execElseBlock = true
 
-      while i < @blocks.length
-        block = @blocks[i]
-        if block.isElse
-          output = Utils.flatten([output, @renderAll(block.attachment, context)]) if execElseBlock is true
-          return output
-        else if block.evaluate(context)
-          execElseBlock = false
-          output = Utils.flatten([output, @renderAll(block.attachment, context)])
-        i++
+      context.stack =>
+        i = 0
 
-    output
+        while i < @blocks.length
+          block = @blocks[i]
+          if block.isElse
+            output = Liquid.Utils.flatten([output, @renderAll(block.attachment, context)]) if execElseBlock is true
+            return output
+          else if block.evaluate(context)
+            execElseBlock = false
+            output = Liquid.Utils.flatten([output, @renderAll(block.attachment, context)])
+          i++
 
-  recordWhenCondition: (markup) ->
-    while markup
-      parts = markup.match(@tagWhenSyntax)
-      throw ("Syntax error in tag 'case' - Valid when condition: {% when [condition] [or condition2...] %} ")  unless parts
-      markup = parts[2]
-      block = new Condition(@left, "==", parts[1])
+      output
+
+    recordWhenCondition: (markup) ->
+      while markup
+        parts = markup.match(@tagWhenSyntax)
+        throw ("Syntax error in tag 'case' - Valid when condition: {% when [condition] [or condition2...] %} ")  unless parts
+        markup = parts[2]
+        block = new Liquid.Condition(@left, "==", parts[1])
+        @blocks.push block
+        @nodelist = block.attach([])
+
+    recordElseCondition: (markup) ->
+      throw ("Syntax error in tag 'case' - Valid else condition: {% else %} (no parameters) ")  unless (markup or "").trim() is ""
+      block = new Liquid.ElseCondition()
       @blocks.push block
       @nodelist = block.attach([])
 
-  recordElseCondition: (markup) ->
-    throw ("Syntax error in tag 'case' - Valid else condition: {% else %} (no parameters) ")  unless (markup or "").trim() is ""
-    block = new ElseCondition()
-    @blocks.push block
-    @nodelist = block.attach([])
 
 
-
-Template.registerTag "case", Case
+  Liquid.Template.registerTag "case", Case

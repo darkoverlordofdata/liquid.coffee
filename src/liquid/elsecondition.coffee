@@ -13,12 +13,12 @@
 #
 # Liquid Templates
 #
-Condition = require('./condition')
+module.exports = (Liquid) ->
 
-class ElseCondition extends Condition
-  isElse: true
-  evaluate: (context) ->
-    true
+  class ElseCondition extends Liquid.Condition
+    isElse: true
+    evaluate: (context) ->
+      true
 
-  toString: ->
-    "<ElseCondition>"
+    toString: ->
+      "<ElseCondition>"

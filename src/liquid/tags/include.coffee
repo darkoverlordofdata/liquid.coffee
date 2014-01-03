@@ -13,61 +13,59 @@
 #
 # Liquid Templates
 #
-Tag = require('../tag')
-Template = require('../template')
-Utils = require('./utils')
+module.exports = (Liquid) ->
 
-module.exports = class Include extends Tag
+  class Include extends Liquid.Tag
 
-  tagSyntax: /((?:"[^"]+"|'[^']+'|[^\s,|]+)+)(\s+(?:with|for)\s+((?:"[^"]+"|'[^']+'|[^\s,|]+)+))?/
-  constructor: (tag, markup, tokens) ->
-    matches = (markup or "").match(@tagSyntax)
-    if matches
-      @templateName = matches[1]
-      @templateNameVar = @templateName.substring(1, @templateName.length - 1)
-      @variableName = matches[3]
-      @attributes = {}
-      attMatchs = markup.match(/(\w*?)\s*\:\s*("[^"]+"|'[^']+'|[^\s,|]+)/g)
-      if attMatchs
-        attMatchs.forEach ((pair) ->
-          pair = pair.split(":")
-          @attributes[pair[0].trim()] = pair[1].trim()
-        ), this
-    else
-      throw ("Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]")
-    super tag, markup, tokens
-
-  render: (context) ->
-    source = Template.fileSystem.readTemplateFile(context.get(@templateName))
-    partial = Template.parse(source)
-    variable = context.get((@variableName or @templateNameVar))
-    output = ""
-    context.stack =>
-
-      @attributes.forEach = (fun) -> #, thisp
-        throw "Object.forEach requires first argument to be a function"  unless typeof fun is "function"
-        i = 0
-        thisp = arguments[1]
-        for key, value of @
-          pair = [key, value]
-          pair.key = key
-          pair.value = value
-          fun.call thisp, pair, i, @
-          i++
-        null
-
-      @attributes.forEach (pair) ->
-        context.set pair.key, context.get(pair.value)
-
-      if variable instanceof Array
-        output = variable.map((variable) ->
-          context.set @templateNameVar, variable
-          partial.render context
-        )
+    tagSyntax: /((?:"[^"]+"|'[^']+'|[^\s,|]+)+)(\s+(?:with|for)\s+((?:"[^"]+"|'[^']+'|[^\s,|]+)+))?/
+    constructor: (tag, markup, tokens) ->
+      matches = (markup or "").match(@tagSyntax)
+      if matches
+        @templateName = matches[1]
+        @templateNameVar = @templateName.substring(1, @templateName.length - 1)
+        @variableName = matches[3]
+        @attributes = {}
+        attMatchs = markup.match(/(\w*?)\s*\:\s*("[^"]+"|'[^']+'|[^\s,|]+)/g)
+        if attMatchs
+          attMatchs.forEach ((pair) ->
+            pair = pair.split(":")
+            @attributes[pair[0].trim()] = pair[1].trim()
+          ), this
       else
-        context.set @templateNameVar, variable
-        output = partial.render(context)
+        throw ("Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]")
+      super tag, markup, tokens
 
-    output = Utils.flatten([output]).join("")
+    render: (context) ->
+      source = Liquid.Template.fileSystem.readTemplateFile(context.get(@templateName))
+      partial = Liquid.Template.parse(source)
+      variable = context.get((@variableName or @templateNameVar))
+      output = ""
+      context.stack =>
 
-Template.registerTag "include", Include
+        @attributes.forEach = (fun) -> #, thisp
+          throw "Object.forEach requires first argument to be a function"  unless typeof fun is "function"
+          i = 0
+          thisp = arguments[1]
+          for key, value of @
+            pair = [key, value]
+            pair.key = key
+            pair.value = value
+            fun.call thisp, pair, i, @
+            i++
+          null
+
+        @attributes.forEach (pair) ->
+          context.set pair.key, context.get(pair.value)
+
+        if variable instanceof Array
+          output = variable.map((variable) ->
+            context.set @templateNameVar, variable
+            partial.render context
+          )
+        else
+          context.set @templateNameVar, variable
+          output = partial.render(context)
+
+      output = Liquid.Utils.flatten([output]).join("")
+
+  Liquid.Template.registerTag "include", Include

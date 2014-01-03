@@ -14,7 +14,7 @@
 # Liquid Templates
 #
 
-module.exports =
+module.exports = (Liquid) ->
 #
 # flatten a nested list
 #

@@ -13,16 +13,18 @@
 #
 # Liquid Templates
 #
-module.exports = class Tag
+module.exports = (Liquid) ->
 
-  constructor: (tagName, markup, tokens) ->
-    @tagName = tagName
-    @markup = markup
-    @nodelist = @nodelist or []
-    @parse tokens
+  class Tag
 
-  parse: (tokens) ->
+    constructor: (tagName, markup, tokens) ->
+      @tagName = tagName
+      @markup = markup
+      @nodelist = @nodelist or []
+      @parse tokens
 
-  render: (context) ->
-    ""
+    parse: (tokens) ->
+
+    render: (context) ->
+      ""
 

@@ -16,9 +16,11 @@
 fs = require('fs')
 path = require('path')
 
-module.exports = class LocalFileSystem
+module.exports = (Liquid) ->
 
-  constructor: (@root) ->
+  class LocalFileSystem
 
-  readTemplateFile: ($template) ->
-    String(fs.readFileSync(path.resolve(@root, $template)))
+    constructor: (@root) ->
+
+    readTemplateFile: ($template) ->
+      String(fs.readFileSync(path.resolve(@root, $template)))

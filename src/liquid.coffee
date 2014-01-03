@@ -13,37 +13,40 @@
 #
 # Liquid Templates
 #
-module.exports =
+Liquid = {}
 
-  VERSION:          require('../package.json').version
-  Drop:             require('./liquid/drop')
-  Strainer:         require('./liquid/strainer')
-  Context:          require('./liquid/context')
-  Tag:              require('./liquid/tag')
-  Block:            require('./liquid/block')
-  Document:         require('./liquid/document')
-  Variable:         require('./liquid/variable')
-  BlankFileSystem:  require('./liquid/blankfilesystem')
-  LocalFileSystem:  require('./liquid/localfilesystem')
-  Template:         require('./liquid/template')
-  StandardFilters:  require('./liquid/standardfilters')
-  Condition:        require('./liquid/condition')
-  ElseCondition:    require('./liquid/elsecondition')
-  Tags:
-    Assign:         require('./liquid/tags/assign')
-    # Block
-    # Break
-    Capture:        require('./liquid/tags/capture')
-    Case:           require('./liquid/tags/case')
-    Comment:        require('./liquid/tags/comment')
-    # Continue
-    Cycle:          require('./liquid/tags/cycle')
-    Decrement:      require('./liquid/tags/decrement')
-    # Extend
-    For:            require('./liquid/tags/for')
-    If:             require('./liquid/tags/if')
-    IfChanged:      require('./liquid/tags/ifchanged')
-    Include:        require('./liquid/tags/include')
-    Increment:      require('./liquid/tags/increment')
-    # Raw
-    Unless:         require('./liquid/tags/unless')
+Liquid.VERSION =         require('../package.json').version
+Liquid.Utils =           (require('./liquid/utils'))(Liquid)
+Liquid.Drop =            (require('./liquid/drop'))(Liquid)
+Liquid.Strainer =        (require('./liquid/strainer'))(Liquid)
+Liquid.Context =         (require('./liquid/context'))(Liquid)
+Liquid.Tag =             (require('./liquid/tag'))(Liquid)
+Liquid.Block =           (require('./liquid/block'))(Liquid)
+Liquid.Document =        (require('./liquid/document'))(Liquid)
+Liquid.Variable =        (require('./liquid/variable'))(Liquid)
+Liquid.BlankFileSystem = (require('./liquid/blankfilesystem'))(Liquid)
+Liquid.LocalFileSystem = (require('./liquid/localfilesystem'))(Liquid)
+Liquid.Template =        (require('./liquid/template'))(Liquid)
+Liquid.StandardFilters = (require('./liquid/standardfilters'))(Liquid)
+Liquid.Condition =       (require('./liquid/condition'))(Liquid)
+Liquid.ElseCondition =   (require('./liquid/elsecondition'))(Liquid)
+Liquid.Assign =          (require('./liquid/tags/assign'))(Liquid)
+Liquid.Tags = {}
+# Block
+# Break
+Liquid.Tags.Capture =        (require('./liquid/tags/capture'))(Liquid)
+Liquid.Tags.Case =           (require('./liquid/tags/case'))(Liquid)
+Liquid.Tags.Comment =        (require('./liquid/tags/comment'))(Liquid)
+# Continue
+Liquid.Tags.Cycle =          (require('./liquid/tags/cycle'))(Liquid)
+Liquid.Tags.Decrement =      (require('./liquid/tags/decrement'))(Liquid)
+# Extend
+Liquid.Tags.For =            (require('./liquid/tags/for'))(Liquid)
+Liquid.Tags.If =             (require('./liquid/tags/if'))(Liquid)
+Liquid.Tags.IfChanged =      (require('./liquid/tags/ifchanged'))(Liquid)
+Liquid.Tags.Include =        (require('./liquid/tags/include'))(Liquid)
+Liquid.Tags.Increment =      (require('./liquid/tags/increment'))(Liquid)
+# Raw
+Liquid.Tags.Unless =         (require('./liquid/tags/unless'))(Liquid)
+
+module.exports = Liquid

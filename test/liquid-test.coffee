@@ -17,7 +17,7 @@
 #
 
 
-Liquid = require("../liquid.coffee")
+Liquid = require("../src/liquid.coffee")
 
 render = ($src, $ctx) ->
   Liquid.Template.parse($src).renderWithErrors($ctx)

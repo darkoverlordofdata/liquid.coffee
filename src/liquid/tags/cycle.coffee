@@ -13,54 +13,53 @@
 #
 # Liquid Templates
 #
-Tag = require('../tag')
-Template = require('../template')
+module.exports = (Liquid) ->
 
-module.exports = class Cycle extends Tag
+  class Cycle extends Liquid.Tag
 
-  tagSimpleSyntax: /"[^"]+"|'[^']+'|[^\s,|]+/
-  tagNamedSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)\s*\:\s*(.*)/
-  constructor: (tag, markup, tokens) ->
-    matches = undefined
-    variables = undefined
+    tagSimpleSyntax: /"[^"]+"|'[^']+'|[^\s,|]+/
+    tagNamedSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)\s*\:\s*(.*)/
+    constructor: (tag, markup, tokens) ->
+      matches = undefined
+      variables = undefined
 
-    # Named first...
-    matches = markup.match(@tagNamedSyntax)
-    if matches
-      @variables = @variablesFromString(matches[2])
-      @name = matches[1]
-    else
-
-      # Try simple...
-      matches = markup.match(@tagSimpleSyntax)
+      # Named first...
+      matches = markup.match(@tagNamedSyntax)
       if matches
-        @variables = @variablesFromString(markup)
-        @name = "'" + @variables.toString() + "'"
+        @variables = @variablesFromString(matches[2])
+        @name = matches[1]
       else
 
-        # Punt
-        throw ("Syntax error in 'cycle' - Valid syntax: cycle [name :] var [, var2, var3 ...]")
-    super tag, markup, tokens
+        # Try simple...
+        matches = markup.match(@tagSimpleSyntax)
+        if matches
+          @variables = @variablesFromString(markup)
+          @name = "'" + @variables.toString() + "'"
+        else
 
-  render: (context) ->
-    key = context.get(@name)
-    output = ""
-    context.registers["cycle"] = {}  unless context.registers["cycle"]
-    context.registers["cycle"][key] = 0  unless context.registers["cycle"][key]
-    context.stack =>
-      iter = context.registers["cycle"][key]
-      results = context.get(@variables[iter])
-      iter += 1
-      iter = 0  if iter is @variables.length
-      context.registers["cycle"][key] = iter
-      output = results
+          # Punt
+          throw ("Syntax error in 'cycle' - Valid syntax: cycle [name :] var [, var2, var3 ...]")
+      super tag, markup, tokens
 
-    output
+    render: (context) ->
+      key = context.get(@name)
+      output = ""
+      context.registers["cycle"] = {}  unless context.registers["cycle"]
+      context.registers["cycle"][key] = 0  unless context.registers["cycle"][key]
+      context.stack =>
+        iter = context.registers["cycle"][key]
+        results = context.get(@variables[iter])
+        iter += 1
+        iter = 0  if iter is @variables.length
+        context.registers["cycle"][key] = iter
+        output = results
 
-  variablesFromString: (markup) ->
-    markup.split(",").map (varname) ->
-      match = varname.match(/\s*("[^"]+"|'[^']+'|[^\s,|]+)\s*/)
-      (if (match[1]) then match[1] else null)
+      output
 
-Template.registerTag "cycle", Cycle
+    variablesFromString: (markup) ->
+      markup.split(",").map (varname) ->
+        match = varname.match(/\s*("[^"]+"|'[^']+'|[^\s,|]+)\s*/)
+        (if (match[1]) then match[1] else null)
+
+  Liquid.Template.registerTag "cycle", Cycle
 

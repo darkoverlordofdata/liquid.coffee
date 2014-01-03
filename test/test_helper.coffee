@@ -4,7 +4,7 @@
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
 #|
-#| This file is a part of Not-php
+#| This file is a part of liquid.coffee
 #|
 #| Not-php is free software; you can copy, modify, and distribute
 #| it under the terms of the MIT License
@@ -16,5 +16,3 @@
 #
 #
 global.should = require('chai').should()
-# End of file test_helper.coffee
-# Location: .test/test_helper.coffee
