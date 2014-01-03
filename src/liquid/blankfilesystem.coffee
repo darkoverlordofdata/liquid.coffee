@@ -13,8 +13,8 @@
 #
 # Liquid Templates
 #
-module.exports = (Liquid) ->
+Liquid = require('../liquid')
 
-  class BlankFileSystem
-    readTemplateFile: (path) ->
-      throw ("This liquid context does not allow includes.")
+class Liquid.BlankFileSystem
+  readTemplateFile: (path) ->
+    throw ("This liquid context does not allow includes.")

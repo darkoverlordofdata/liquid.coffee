@@ -364,6 +364,12 @@ describe 'liquid', ->
       render("{% unless 1 >= 1 %}TRUE{% else %}FALSE{% endunless %}").should.equal "FALSE"
       render("{% unless 'Test' contains 'T' %}TRUE{% else %}FALSE{% endunless %}").should.equal "FALSE"
 
+    it "{% increment %}", ->
+      render("{% increment counter %}{% increment counter %}{% increment counter %}").should.equal "123"
+
+    it "{% decrement %}", ->
+      render("{% decrement counter %}{% decrement counter %}").should.equal "-1-2"
+
   #? -----------------------------------------------------------------+
   describe "Testing context...", ->
     it "{{ collection['missing_key'].value }}", ->

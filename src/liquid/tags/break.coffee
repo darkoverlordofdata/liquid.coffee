@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| liquid.coffee
+#| break.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -15,7 +15,6 @@
 #
 Liquid = require('../../liquid')
 
-class Liquid.Tags.Comment extends Liquid.Block
-  render: (context) ->
-    ""
-Liquid.Template.registerTag "comment", Liquid.Tags.Comment
+class Liquid.Tags.Break extends Liquid.Tag
+
+Liquid.Template.registerTag "break", Liquid.Tags.Break

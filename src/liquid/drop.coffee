@@ -13,19 +13,19 @@
 #
 # Liquid Templates
 #
-module.exports = (Liquid) ->
+Liquid = require('../liquid')
 
-  class Drop
+class Liquid.Drop
 
-    setContext: (context) ->
-      @context = context
+  setContext: (context) ->
+    @context = context
 
-    beforeMethod: (method) ->
+  beforeMethod: (method) ->
 
-    invokeDrop: (method) ->
-      results = @beforeMethod()
-      results = this[method].apply(this)  if not results and (method of this)
-      results
+  invokeDrop: (method) ->
+    results = @beforeMethod()
+    results = this[method].apply(this)  if not results and (method of this)
+    results
 
-    hasKey: (name) ->
-      true
+  hasKey: (name) ->
+    true

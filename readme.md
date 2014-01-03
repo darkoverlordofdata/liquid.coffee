@@ -4,9 +4,22 @@ Liquid Template library used by Huginn
 
 A clone of (liquid.js) [https://github.com/darthapo/liquid.js]
 
+## Modifications
+
     Ported to coffeescript.
     Removed browser dependancies.
     Removed polyfills not needed in node.js
+    Add missing tags:
+
+        *block - https://github.com/danwrong/liquid-inheritance
+        *break
+        *continue
+        decrement
+        *extend - https://github.com/danwrong/liquid-inheritance
+        increment
+        *raw
+
+        * = unfinished
 
 
 ## License

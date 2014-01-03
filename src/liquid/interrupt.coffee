@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| liquid.coffee
+#| interrupt.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -13,9 +13,15 @@
 #
 # Liquid Templates
 #
-Liquid = require('../../liquid')
+Liquid = require('../liquid')
 
-class Liquid.Tags.Comment extends Liquid.Block
-  render: (context) ->
-    ""
-Liquid.Template.registerTag "comment", Liquid.Tags.Comment
+class Liquid.Interrupt
+
+  message: ''
+
+  constructor: (message) ->
+    @message = message or 'interrupt'
+
+class Liquid.BreakInterrupt extends Liquid.Interrupt
+
+class Liquid.ContinueInterrupt extends Liquid.Interrupt

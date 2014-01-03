@@ -13,94 +13,94 @@
 #
 # Liquid Templates
 #
-module.exports = (Liquid) ->
+Liquid = require('../liquid')
 
-  class Condition
+class Liquid.Condition
 
-    @operators =
-      "==": (l, r) ->
-        l is r
+  @operators =
+    "==": (l, r) ->
+      l is r
 
-      "=": (l, r) ->
-        l is r
+    "=": (l, r) ->
+      l is r
 
-      "!=": (l, r) ->
-        l isnt r
+    "!=": (l, r) ->
+      l isnt r
 
-      "<>": (l, r) ->
-        l isnt r
+    "<>": (l, r) ->
+      l isnt r
 
-      "<": (l, r) ->
-        l < r
+    "<": (l, r) ->
+      l < r
 
-      ">": (l, r) ->
-        l > r
+    ">": (l, r) ->
+      l > r
 
-      "<=": (l, r) ->
-        l <= r
+    "<=": (l, r) ->
+      l <= r
 
-      ">=": (l, r) ->
-        l >= r
+    ">=": (l, r) ->
+      l >= r
 
-      contains: (l, r) ->
-        l.match r
-
-
-      hasKey: (l, r) ->
-        l[r]?
+    contains: (l, r) ->
+      l.match r
 
 
-    #'hasValue': function(l,r) { return l.hasValue(r); }
-      hasValue: (l, r) ->
-        for p of l
-          return true  if l[p] is r
-        false
+    hasKey: (l, r) ->
+      l[r]?
 
 
-    constructor: (left, operator, right) ->
-      @left = left
-      @operator = operator
-      @right = right
-      @childRelation = null
-      @childCondition = null
-      @attachment = null
+  #'hasValue': function(l,r) { return l.hasValue(r); }
+    hasValue: (l, r) ->
+      for p of l
+        return true  if l[p] is r
+      false
 
-    evaluate: (context) ->
-      context = context or new Context()
-      result = @interpretCondition(@left, @right, @operator, context)
-      switch @childRelation
-        when "or"
-          result or @childCondition.evaluate(context)
-        when "and"
-          result and @childCondition.evaluate(context)
-        else
-          result
 
-    or: (condition) ->
-      @childRelation = "or"
-      @childCondition = condition
+  constructor: (left, operator, right) ->
+    @left = left
+    @operator = operator
+    @right = right
+    @childRelation = null
+    @childCondition = null
+    @attachment = null
 
-    and: (condition) ->
-      @childRelation = "and"
-      @childCondition = condition
+  evaluate: (context) ->
+    context = context or new Context()
+    result = @interpretCondition(@left, @right, @operator, context)
+    switch @childRelation
+      when "or"
+        result or @childCondition.evaluate(context)
+      when "and"
+        result and @childCondition.evaluate(context)
+      else
+        result
 
-    attach: (attachment) ->
-      @attachment = attachment
-      @attachment
+  or: (condition) ->
+    @childRelation = "or"
+    @childCondition = condition
 
-    isElse: false
-    interpretCondition: (left, right, op, context) ->
+  and: (condition) ->
+    @childRelation = "and"
+    @childCondition = condition
 
-      # If the operator is empty this means that the decision statement is just
-      # a single variable. We can just pull this variable from the context and
-      # return this as the result.
-      return context.get(left)  unless op
-      left = context.get(left)
-      right = context.get(right)
-      op = Condition.operators[op]
-      throw ("Unknown operator " + op)  unless op
-      results = op(left, right)
-      results
+  attach: (attachment) ->
+    @attachment = attachment
+    @attachment
 
-    toString: ->
-      "<Condition " + @left + " " + @operator + " " + @right + ">"
+  isElse: false
+  interpretCondition: (left, right, op, context) ->
+
+    # If the operator is empty this means that the decision statement is just
+    # a single variable. We can just pull this variable from the context and
+    # return this as the result.
+    return context.get(left)  unless op
+    left = context.get(left)
+    right = context.get(right)
+    op = Condition.operators[op]
+    throw ("Unknown operator " + op)  unless op
+    results = op(left, right)
+    results
+
+  toString: ->
+    "<Condition " + @left + " " + @operator + " " + @right + ">"

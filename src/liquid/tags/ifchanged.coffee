@@ -13,18 +13,18 @@
 #
 # Liquid Templates
 #
-module.exports = (Liquid) ->
+Liquid = require('../../liquid')
 
-  class IfChanged extends Liquid.Block
+class Liquid.Tags.IfChanged extends Liquid.Block
 
-    render: (context) ->
-      output = ""
-      context.stack =>
-        results = @renderAll(@nodelist, context).join("")
-        unless results is context.registers["ifchanged"]
-          output = results
-          context.registers["ifchanged"] = output
+  render: (context) ->
+    output = ""
+    context.stack =>
+      results = @renderAll(@nodelist, context).join("")
+      unless results is context.registers["ifchanged"]
+        output = results
+        context.registers["ifchanged"] = output
 
-      output
+    output
 
-  Liquid.Template.registerTag "ifchanged", IfChanged
+Liquid.Template.registerTag "ifchanged", Liquid.Tags.IfChanged

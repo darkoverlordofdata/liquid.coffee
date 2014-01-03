@@ -13,18 +13,18 @@
 #
 # Liquid Templates
 #
-module.exports = (Liquid) ->
+Liquid = require('../../liquid')
 
-  class Increment extends Liquid.Tag
+class Liquid.Tags.Increment extends Liquid.Tag
 
-    constructor: (tagName, markup, tokens) ->
-      @variable = markup.trim()
-      super tagName, markup, tokens
+  constructor: (tagName, markup, tokens) ->
+    @variable = markup.trim()
+    super tagName, markup, tokens
 
-    render: (context) ->
-      value = context.scopes[0][@variable] or= 0
-      value = value + 1
-      context.scopes[0][@variable] = value
-      value.toString()
+  render: (context) ->
+    value = context.scopes[0][@variable] or= 0
+    value = value + 1
+    context.scopes[0][@variable] = value
+    value.toString()
 
-  Liquid.Template.registerTag "increment", Increment
+Liquid.Template.registerTag "increment", Liquid.Tags.Increment

@@ -13,29 +13,29 @@
 #
 # Liquid Templates
 #
-module.exports = (Liquid) ->
+Liquid = require('../../liquid')
 
-  class Unless extends Liquid.Tags.If
-    render: (context) ->
-      output = ""
-      context.stack =>
+class Liquid.Tags.Unless extends Liquid.Tags.If
+  render: (context) ->
+    output = ""
+    context.stack =>
 
-        # The first block is called if it evaluates to false...
-        block = @blocks[0]
-        unless block.evaluate(context)
+      # The first block is called if it evaluates to false...
+      block = @blocks[0]
+      unless block.evaluate(context)
+        output = @renderAll(block.attachment, context)
+        return
+
+      # the rest are the same..
+      i = 1
+
+      while i < @blocks.length
+        block = @blocks[i]
+        if block.evaluate(context)
           output = @renderAll(block.attachment, context)
           return
+        i++
 
-        # the rest are the same..
-        i = 1
+    Liquid.Utils.flatten([output]).join ""
 
-        while i < @blocks.length
-          block = @blocks[i]
-          if block.evaluate(context)
-            output = @renderAll(block.attachment, context)
-            return
-          i++
-
-      Liquid.Utils.flatten([output]).join ""
-
-  Liquid.Template.registerTag "unless", Unless
+Liquid.Template.registerTag "unless", Liquid.Tags.Unless
