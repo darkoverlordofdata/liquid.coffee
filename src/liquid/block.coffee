@@ -17,66 +17,67 @@ Liquid = require('../liquid')
 
 class Liquid.Block extends Liquid.Tag
 
-  IsTag             = /^\{\%/
-  IsVariable        = /^\{\{/
-  FullToken         = /^\{\%\s*(\w+)\s*(.*)?\%\}$/
-  ContentOfVariable = /^\{\{(.*)\}\}$/
+  IsTag             = ///^#{Liquid.TagStart.source}///
+  IsVariable        = ///^#{Liquid.VariableStart.source}///
+  FullToken         = ///^#{Liquid.TagStart.source}\s*(\w+)\s*(.*)?#{Liquid.TagEnd.source}$///
+  ContentOfVariable = ///^#{Liquid.VariableStart.source}(.*)#{Liquid.VariableEnd.source}$///
 
   constructor: (tagName, markup, tokens) ->
     @blockName = tagName
-    @blockDelimiter = "end" + @blockName
+    @blockDelimiter ="end#{@blockName}"
     super tagName, markup, tokens
 
   parse: (tokens) ->
-
-    # NOTE Don't just blindly re-initialize nodelist; inherited classes may
-    # share this through pointers; specifically If points _nodelist at the
-    # blocks attachment, so we need to leave that pointer to pickup stuff.
     @nodelist or= []
     @nodelist.length = 0
-    token = tokens.shift()
-    tokens.push "" # To ensure we don't lose the last token passed in...
-    while tokens.length
+
+    while (token = tokens.shift())?
 
       if IsTag.test token
-        if (tagParts = token.match(FullToken))?
+        if $ = token.match(FullToken)
 
-          # if we found the proper block delimitor just end parsing here and let the outer block proceed
-          if @blockDelimiter is tagParts[1]
+          # if we found the proper block delimitor just end parsing here and let the outer block
+          # proceed
+          if @blockDelimiter is $[1]
             @endTag()
             return
-          if tagParts[1] of Liquid.Template.tags
-            @nodelist.push new Liquid.Template.tags[tagParts[1]](tagParts[1], tagParts[2], tokens)
-          else
-            @unknownTag tagParts[1], tagParts[2], tokens
-        else
-          throw ("Tag '" + token + "' was not properly terminated with: %}")
 
+          # fetch the tag from registered blocks
+          if tag = Liquid.Template.tags[$[1]]
+            @nodelist.push new tag($[1], $[2], tokens)
+          else
+            # this tag is not registered with the system
+            # pass it to the current block for special handling or error reporting
+            @unknownTag $[1], $[2], tokens
+        else
+          throw new SyntaxError("Tag '#{token}' was not properly terminated with regexp: #{Liquid.TagEnd.source} ")
       else if IsVariable.test token
         @nodelist.push @createVariable(token)
-
-      else #if(token != '') {
+      else if token is ''
+        # pass
+      else
         @nodelist.push token
-      # Ignores tokens that are empty
-      token = tokens.shift() # Assign the next token to loop again...
 
-    # Effectively this method will throw and exception unless the current block is of type Document
+    # Make sure that its ok to end parsing in the current block.
+    # Effectively this method will throw and exception unless the current block is
+    # of type Document
     @assertMissingDelimitation()
+
 
   endTag: ->
 
   unknownTag: (tag, params, tokens) ->
     switch tag
       when "else"
-        throw (@blockName + " tag does not expect else tag")
+        throw new SyntaxError("#{@blockName} tag does not expect else tag")
       when "end"
-        throw ("'end' is not a valid delimiter for " + @blockName + " tags. use " + @blockDelimiter)
+        throw new SyntaxError("'end' is not a valid delimiter for #{@blockName} tags. use #{@blockDelimiter}")
       else
-        throw ("Unknown tag: " + tag)
+        throw new SyntaxError("Unknown tag '#{tag}'")
 
   createVariable: (token) ->
-    if (match = token.match(ContentOfVariable))?
-      new Liquid.Variable(match[1])
+    if content = token.match(ContentOfVariable)
+      new Liquid.Variable(content[1])
     else
       throw ("Variable '" + token + "' was not properly terminated with: }}")
 
@@ -85,13 +86,10 @@ class Liquid.Block extends Liquid.Tag
 
   renderAll: (list, context) ->
     (list or []).map (token, i) ->
-      output = ""
-      try # hmmm... feels a little heavy
-        output = (if (token["render"]) then token.render(context) else token)
+      try
+        if token.render? then token.render(context) else token
       catch e
-        output = context.handleError(e)
-      output
-
+        context.handleError(e)
 
   assertMissingDelimitation: ->
     throw (@blockName + " tag was never closed")

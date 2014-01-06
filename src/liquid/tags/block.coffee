@@ -15,6 +15,46 @@
 #
 Liquid = require('../../liquid')
 
+class Liquid.Tags.BlockDrop extends Liquid.Drop
+
+  constructor: (@block) ->
+
+  super: ->
+    @block.callSuper @context
+
+
 class Liquid.Tags.Block extends Liquid.Block
+
+  Syntax = /(\w)+/
+
+  parent: null
+  name: ''
+
+  constructor: (tagName, markup, tokens) ->
+    if ($ = markup.match(Syntax))?
+      @name = $[1]
+    else
+      throw new Liquid.SyntaxError("Syntax Error in 'block' - Valid syntax: block [name]")
+
+    super tagName, markup, tokens if tokens?
+
+  render: (context) ->
+    context.stack =>
+      context['block'] = new Liquid.BlockDrop(@)
+      @renderAll @nodelist, context
+
+  addParent: (nodelist) ->
+    if @parent?
+      @parent.addParent nodelist
+    else
+      @parent = Liquid.Tags.Block(@tagName, @name, null)
+      @parent.nodelist = nodelist
+
+  callSuper: (context) ->
+    if @parent?
+      @parent.render(context)
+    else
+      ''
+
 
 Liquid.Template.registerTag "block", Liquid.Tags.Block

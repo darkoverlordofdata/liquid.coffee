@@ -17,4 +17,7 @@ Liquid = require('../../liquid')
 
 class Liquid.Tags.Continue extends Liquid.Tag
 
+  interrupt: ->
+    new Liquid.ContinueInterrupt
+
 Liquid.Template.registerTag "continue", Liquid.Tags.Continue

@@ -66,6 +66,6 @@ class Include extends Liquid.Tag
         context.set @templateNameVar, variable
         output = partial.render(context)
 
-    output = Liquid.Utils.flatten([output]).join("")
+    output = [output].flatten.join("")
 
 Liquid.Template.registerTag "include", Include

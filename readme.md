@@ -6,21 +6,10 @@ A clone of (liquid.js) [https://github.com/darthapo/liquid.js]
 
 ## Modifications
 
-    Ported to coffeescript.
-    Removed browser dependancies.
-    Removed polyfills not needed in node.js
-    Add missing tags:
+    0.0.2
 
-        *block - https://github.com/danwrong/liquid-inheritance
-        *break
-        *continue
-        decrement
-        *extend - https://github.com/danwrong/liquid-inheritance
-        increment
-        *raw
-
-        * = unfinished
-
+        re-write ported from liquid.rb 2.2.2 (liquid-old) [https://github.com/Shopify/liquid-old]
+        Some fixes referenced to (liquid.js) [https://github.com/darthapo/liquid.js]
 
 ## License
 

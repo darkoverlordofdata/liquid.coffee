@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| elsecondition.coffee
+#| errors.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -15,10 +15,11 @@
 #
 Liquid = require('../liquid')
 
-class Liquid.ElseCondition extends Liquid.Condition
-  isElse: true
-  evaluate: (context) ->
-    true
-
-  toString: ->
-    "<ElseCondition>"
+class Liquid.ArgumentError extends Error
+class Liquid.ContextError extends Error
+class Liquid.FilterNotFound extends Error
+class Liquid.FileSystemError extends Error
+class Liquid.StandardError extends Error
+class Liquid.SyntaxError extends Error
+class Liquid.StackLevelError extends Error
+class Liquid.MemoryError extends Error

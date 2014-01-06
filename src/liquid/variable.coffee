@@ -16,42 +16,49 @@
 
 Liquid = require('../liquid')
 
+# Holds variables. Variables are only loaded "just in time"
+# and are not evaluated as part of the render stage
+#
+#   {{ monkey }}
+#   {{ user.name }}
+#
+# Variables can be combined with filters:
+#
+#   {{ user | link }}
+#
 class Liquid.Variable
+
+  FilterParser = ///(?:#{Liquid.FilterSeparator.source}|(?:\s*(?!(?:#{Liquid.FilterSeparator.source}))(?:#{Liquid.QuotedFragment.source}|\S+)\s*)+)///
+
 
   constructor: (markup) ->
     @markup = markup
     @name = null
     @filters = []
-    self = this
-    match = markup.match(/\s*("[^"]+"|'[^']+'|[^\s,|]+)/)
-    if match
-      @name = match[1]
-      filterMatches = markup.match(/\|\s*(.*)/)
-      if filterMatches
-        filters = filterMatches[1].split(/\|/)
-        filters.forEach (f) ->
-          matches = f.match(/\s*(\w+)/)
-          if matches
-            filterName = matches[1]
-            filterArgs = []
-            Liquid.Utils.flatten(f.match(/(?:[:|,]\s*)("[^"]+"|'[^']+'|[^\s,|]+)/g) or []).forEach (arg) ->
-              cleanupMatch = arg.match(/^[\s|:|,]*(.*?)[\s]*$/)
-              filterArgs.push cleanupMatch[1]  if cleanupMatch
 
-            self.filters.push [filterName, filterArgs]
+    if match = markup.match(///\s*(#{Liquid.QuotedFragment.source})(.*)///)
+      @name = match[1]
+      if match[2].match(///#{Liquid.FilterSeparator.source}\s*(.*)///)
+        filters = match[2].match(///#{FilterParser.source}///g)
+        filters.forEach (f) =>
+          if matches = f.match(/\s*(\w+)/)
+            filtername = matches[1]
+            filterargs = f.split(///(?:#{Liquid.FilterArgumentSeparator}|#{Liquid.ArgumentSeparator})\s*(#{Liquid.QuotedFragment.source})///)
+            filterargs.shift()
+            filterargs.pop()
+            @filters.push [filtername, filterargs.flatten.compact]
+
 
 
   render: (context) ->
-    return ""  unless @name?
-    output = context.get(@name)
-    @filters.forEach (filter) ->
-      filterName = filter[0]
-      filterArgs = (filter[1] or []).map((arg) ->
-        context.get arg
-      )
-      filterArgs.unshift output # Push in input value into the first argument spot...
-      output = context.invoke(filterName, filterArgs)
+    return '' unless @name?
+    @filters.inject context.get(@name), (output, filter) ->
+      filterargs = filter[1].map (a) ->
+        context.get(a)
+      try
+        output = context.invoke(filter[0], [output].concat(filterargs))
+      catch e
+        throw new Liquid.FilterNotFound("Error - filter '#{filter[0]}' in '#{@markup.trim()}' could not be found.")
 
-    output
 
 

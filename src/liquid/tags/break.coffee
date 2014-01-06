@@ -17,4 +17,7 @@ Liquid = require('../../liquid')
 
 class Liquid.Tags.Break extends Liquid.Tag
 
+  interrupt: ->
+    new Liquid.BreakInterrupt
+
 Liquid.Template.registerTag "break", Liquid.Tags.Break

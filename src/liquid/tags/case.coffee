@@ -17,6 +17,9 @@ Liquid = require('../../liquid')
 
 class Liquid.Tags.Case extends Liquid.Block
 
+  Syntax     = ///(#{QuotedFragment})///
+  WhenSyntax = ///(#{QuotedFragment})(?:(?:\s+or\s+|\s*\,\s*)(#{QuotedFragment}.*))?///
+
   tagSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)/
   tagWhenSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)(?:(?:\s+or\s+|\s*\,\s*)("[^"]+"|'[^']+'|[^\s,|]+.*))?/
   constructor: (tagName, markup, tokens) ->
@@ -47,12 +50,12 @@ class Liquid.Tags.Case extends Liquid.Block
 
       while i < @blocks.length
         block = @blocks[i]
-        if block.isElse
-          output = Liquid.Utils.flatten([output, @renderAll(block.attachment, context)]) if execElseBlock is true
+        if block.else()
+          output = [output, @renderAll(block.attachment, context)].flatten if execElseBlock is true
           return output
         else if block.evaluate(context)
           execElseBlock = false
-          output = Liquid.Utils.flatten([output, @renderAll(block.attachment, context)])
+          output = [output, @renderAll(block.attachment, context)].flatten
         i++
 
     output

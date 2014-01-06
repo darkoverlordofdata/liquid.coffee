@@ -43,7 +43,7 @@ class Liquid.Tags.If extends Liquid.Block
           return
         i++
 
-    Liquid.Utils.flatten([output]).join ""
+    [output].flatten.join ""
 
   pushBlock: (tag, markup) ->
     block = undefined

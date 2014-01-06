@@ -85,8 +85,6 @@ class Liquid.Tags.For extends Liquid.Block
 #        break if interrupt.is_a? BreakInterrupt
 #        next if interrupt.is_a? ContinueInterrupt
 
-
-
-    Liquid.Utils.flatten([output]).join ""
+    [output].flatten.join ""
 
 Liquid.Template.registerTag "for", Liquid.Tags.For

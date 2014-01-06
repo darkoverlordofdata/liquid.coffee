@@ -16,33 +16,41 @@
 
 Liquid = require('../liquid')
 
+# Strainer is the parent class for the filters system.
+# New filters are mixed into the strainer class which is then instantiated for each liquid template render run.
+#
+# The Strainer only allows method calls defined in filters given to it via Strainer.global_filter,
+# Context#add_filters or Template.register_filter
 class Liquid.Strainer
 
-  @filters = {}
-  @globalFilter = (filters) ->
-    for f of filters
-      Strainer.filters[f] = filters[f]
-
-
-  # Array of methods to keep...
+  INTERNAL_METHOD = /^__/
   @requiredMethods = ["respondTo", "context"]
-  @create = (context) ->
-    strainer = new Strainer(context)
-    for f of Strainer.filters
-
-      #console.log('f', f);
-      #console.log('Strainer.filters[f]', Strainer.filters[f]);
-      strainer[f] = Strainer.filters[f]
-    strainer
+  @filters = {}
 
   constructor: (context) ->
     @context = context
 
+  @globalFilter = (filter) ->
+    throw ArgumentError "Passed filter is not a module" unless 'function' is typeof filter
+    Strainer.filters[filter.name] = filter
+
+
+  # Array of methods to keep...
+  @create = (context) ->
+    strainer = new Strainer(context)
+    for k, m of Strainer.filters
+      for name, func of m
+        strainer[name] = func
+    strainer
+
   respondTo: (methodName) ->
     methodName = methodName.toString()
-    return false  if methodName.match(/^__/)
+    return false  if INTERNAL_METHOD.test methodName
     return false  if methodName in Strainer.requiredMethods
 
     if @[methodName]? then true else false
 
 
+  extend: (m) ->
+    for name, val of m
+      @[name] = val unless @[name]?

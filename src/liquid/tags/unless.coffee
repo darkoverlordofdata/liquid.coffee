@@ -36,6 +36,6 @@ class Liquid.Tags.Unless extends Liquid.Tags.If
           return
         i++
 
-    Liquid.Utils.flatten([output]).join ""
+    [output].flatten.join ""
 
 Liquid.Template.registerTag "unless", Liquid.Tags.Unless

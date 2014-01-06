@@ -19,8 +19,7 @@ class Liquid.Interrupt
 
   message: ''
 
-  constructor: (message) ->
-    @message = message or 'interrupt'
+  constructor: (@message = 'interrupt') ->
 
 class Liquid.BreakInterrupt extends Liquid.Interrupt
 

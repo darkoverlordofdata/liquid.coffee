@@ -13,8 +13,19 @@
 #
 # Liquid Templates
 #
+fs = require('fs')
+path = require('path')
 Liquid = require('../liquid')
 
 class Liquid.BlankFileSystem
+
   readTemplateFile: (path) ->
     throw ("This liquid context does not allow includes.")
+
+
+class Liquid.LocalFileSystem
+
+  constructor: (@root) ->
+
+  readTemplateFile: ($template) ->
+    String(fs.readFileSync(path.resolve(@root, $template)))

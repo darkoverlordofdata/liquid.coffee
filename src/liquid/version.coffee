@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| localfilesystem.coffee
+#| version.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,16 +11,8 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# Liquid Templates
+# Load the Liquid Template Framework
 #
-fs = require('fs')
-path = require('path')
-
 Liquid = require('../liquid')
 
-class Liquid.LocalFileSystem
-
-  constructor: (@root) ->
-
-  readTemplateFile: ($template) ->
-    String(fs.readFileSync(path.resolve(@root, $template)))
+Liquid.VERSION =  require('../../package.json').version

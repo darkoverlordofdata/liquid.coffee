@@ -15,20 +15,30 @@
 #
 Liquid = require('../../liquid')
 
+# Assign sets a variable in your template.
+#
+#   {% assign foo = 'monkey' %}
+#
+# You can then use the variable later in the page.
+#
+#  {{ foo }}
+#
 class Liquid.Tags.Assign extends Liquid.Tag
 
-  tagSyntax: /((?:\(?[\w\-\.\[\]]\)?)+)\s*=\s*((?:"[^"]+"|'[^']+'|[^\s,|]+)+)/
+  Syntax = ///((?:#{Liquid.VariableSignature.source})+)\s*=\s*((?:#{Liquid.StrictQuotedFragment.source})+)///
+
+
   constructor: (tagName, markup, tokens) ->
-    parts = markup.match(@tagSyntax)
-    if parts
-      @to = parts[1]
-      @from = parts[2]
+    if $ = markup.match(Syntax)
+      @to = $[1]
+      @from = $[2]
     else
-      throw ("Syntax error in 'assign' - Valid syntax: assign [var] = [source]")
+      throw new Liquid.SyntaxError("Syntax error in 'assign' - Valid syntax: assign [var] = [source]")
     super tagName, markup, tokens
 
+
   render: (context) ->
-    context.scopes[context.scopes.length-1][@to.toString()] = context.get(@from)
+    context.scopes.last[@to] = context.get(@from)
     ""
 
 Liquid.Template.registerTag "assign", Liquid.Tags.Assign
