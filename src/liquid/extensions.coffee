@@ -49,3 +49,4 @@ Object.defineProperties Array::,
     for $item in @
       if $func.call(@, $item)
         return $item
+

@@ -15,6 +15,8 @@
 #
 Liquid = require('../../liquid')
 
+# see https://github.com/danwrong/liquid-inheritance/blob/master/lib/tags/block.rb
+
 class Liquid.Tags.BlockDrop extends Liquid.Drop
 
   constructor: (@block) ->
@@ -31,7 +33,7 @@ class Liquid.Tags.Block extends Liquid.Block
   name: ''
 
   constructor: (tagName, markup, tokens) ->
-    if ($ = markup.match(Syntax))?
+    if $ = markup.match(Syntax)
       @name = $[1]
     else
       throw new Liquid.SyntaxError("Syntax Error in 'block' - Valid syntax: block [name]")
@@ -40,14 +42,14 @@ class Liquid.Tags.Block extends Liquid.Block
 
   render: (context) ->
     context.stack =>
-      context['block'] = new Liquid.BlockDrop(@)
+      context.set 'block', new Liquid.BlockDrop(@)
       @renderAll @nodelist, context
 
   addParent: (nodelist) ->
     if @parent?
       @parent.addParent nodelist
     else
-      @parent = Liquid.Tags.Block(@tagName, @name, null)
+      @parent = Liquid.Tags.Block(@tagName, @name)
       @parent.nodelist = nodelist
 
   callSuper: (context) ->

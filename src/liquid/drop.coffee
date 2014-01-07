@@ -23,14 +23,12 @@ Liquid = require('../liquid')
 #
 # Example:
 #
-#   class ProductDrop < Liquid::Drop
-#     def top_sales
-#       Shop.current.products.find(:all, :order => 'sales', :limit => 10 )
-#     end
-#   end
+#   class ProductDrop extends Liquid.Drop
+#     top_sales: ->
+#       Shop.current.products.find('all', order: 'sales', limit: 10 )
 #
-#   tmpl = Liquid::Template.parse( ' {% for product in product.top_sales %} {{ product.name }} {%endfor%} '  )
-#   tmpl.render('product' => ProductDrop.new ) # will invoke top_sales query.
+#   tmpl = Liquid.Template.parse( ' {% for product in product.top_sales %} {{ product.name }} {%endfor%} '  )
+#   tmpl.render(product: new ProductDrop ) # will invoke top_sales query.
 #
 # Your drop can either implement the methods sans any parameters or implement the before_method(name) method which is a
 # catch all.
@@ -46,7 +44,7 @@ class Liquid.Drop
     if 'function' is typeof Drop::[method]
       @[method].apply(@)
     else
-      @before_method(method)
+      @beforeMethod(method)
 
   hasKey: (name) ->
     true

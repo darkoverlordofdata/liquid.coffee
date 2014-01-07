@@ -1,18 +1,20 @@
-#+--------------------------------------------------------------------+
-#| test_helper.coffee
-#+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2013
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of liquid.coffee
-#|
-#| Not-php is free software; you can copy, modify, and distribute
-#| it under the terms of the MIT License
-#|
-#+--------------------------------------------------------------------+
 #
-#	test_helper - Main application
+#	test_helper - Set up the test environment
 #
 #
 #
-global.should = require('chai').should()
+do ->
+
+  Object.defineProperties @,
+
+    # Use chai 'should' semantics
+    should: value: require('chai').should()
+
+    # The Liquid framework
+    Liquid: value: require("../src/liquid.coffee")
+
+    # helper functions
+    render: value: ($src, $ctx) ->
+      Liquid.Template.parse($src).renderWithErrors($ctx)
+
+

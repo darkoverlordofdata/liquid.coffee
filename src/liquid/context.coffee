@@ -17,16 +17,16 @@ Liquid = require('../liquid')
 
 # Context keeps the variable stack and resolves variables, as well as keywords
 #
-#   context['variable'] = 'testing'
-#   context['variable'] #=> 'testing'
-#   context['true']     #=> true
-#   context['10.2232']  #=> 10.2232
+#   context.get('variable') = 'testing'
+#   context.get('variable') #=> 'testing'
+#   context.get('true')     #=> true
+#   context.get('10.2232')  #=> 10.2232
 #
-#   context.stack do
-#      context['bob'] = 'bobsen'
-#   end
+#   context.stack =>
+#      context.set 'bob', 'bobsen'
+#   
 #
-#   context['bob']  #=> nil  class Context
+#   context.get('bob')  #=> nil  class Context
 class Liquid.Context
 
   LITERALS =
@@ -35,7 +35,6 @@ class Liquid.Context
     '': null
     'true': true
     'false': false
-
 
   constructor: (environments, outerScope, registers, rethrowErrors) ->
     @environments   = [environments].flatten
@@ -53,7 +52,7 @@ class Liquid.Context
     filters = [filters].flatten.compact
 
     filters.forEach (f) ->
-      throw Liquid.ArgumentError("Expected object but got: " + typeof (f))  unless typeof (f) is "function"
+      throw Liquid.ArgumentError("Expected module but got: " + typeof (f))  unless typeof (f) is "function"
       @strainer.extend f
 
 
@@ -90,11 +89,11 @@ class Liquid.Context
   # Pushes a new local scope on the stack, pops it at the end of the block
   #
   # Example:
-  #   context.stack do
-  #      context['var'] = 'hi'
-  #   end
+  #   context.stack =>
+  #      context.get('var') = 'hi'
+  #   
   #
-  #   context['var]  #=> nil
+  #   context.get('var)  #=> nil
   stack: ($yield, newScope = {}) ->
     @push newScope
     try
@@ -123,7 +122,7 @@ class Liquid.Context
   # Some special keywords return symbols. Those symbols are to be called on the rhs object in expressions
   #
   # Example:
-  #   products == empty #=> products.empty?
+  #   products is null #=> not products?
   resolve: (key) ->
     if LITERALS[key]?
       LITERALS[key]
@@ -164,9 +163,9 @@ class Liquid.Context
   # Resolves namespaced queries gracefully.
   #
   # Example
-  #  @context['hash'] = {"name" => 'tobi'}
-  #  assert_equal 'tobi', @context['hash.name']
-  #  assert_equal 'tobi', @context['hash["name"]']
+  #  @context['hash'] = {name: 'tobi'}
+  #  assert_equal 'tobi', @context.get('hash.name')
+  #  assert_equal 'tobi', @context.get('hash["name"]')
   variable: (markup) ->
     return null  unless typeof markup is "string"
 

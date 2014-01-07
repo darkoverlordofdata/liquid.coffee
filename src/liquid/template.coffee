@@ -25,8 +25,8 @@ Liquid = require('../liquid')
 #
 # Example:
 #
-#   template = Liquid::Template.parse(source)
-#   template.render('user_name' => 'bob')
+#   template = Liquid.Template.parse(source)
+#   template.render user_name: 'bob'
 #
 class Liquid.Template
 

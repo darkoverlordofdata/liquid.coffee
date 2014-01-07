@@ -24,7 +24,7 @@ Liquid = require('../liquid')
 class Liquid.Strainer
 
   INTERNAL_METHOD = /^__/
-  @requiredMethods = ["respondTo", "context"]
+  @requiredMethods = ['respondTo', 'context', 'extend']
   @filters = {}
 
   constructor: (context) ->

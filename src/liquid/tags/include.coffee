@@ -37,7 +37,7 @@ class Include extends Liquid.Tag
 
 
   render: (context) ->
-    source = @_readTemplateFromFileSystem(context)
+    source = Include.readTemplateFromFileSystem(context, @templateName)
 
     partial = Liquid.Template.parse(source)
     variable = context.get(@variableName or @templateName[1..-2])
@@ -59,11 +59,11 @@ class Include extends Liquid.Tag
     output
 
 
-  _readTemplateFromFileSystem: (context) ->
+  @readTemplateFromFileSystem: (context, templateName) ->
 
     fileSystem = context.registers.fileSystem or Liquid.Template.fileSystem
 
-    fileSystem.readTemplateFile(context.get(@templateName))
+    fileSystem.readTemplateFile(context.get(templateName))
 
 
 Liquid.Template.registerTag "include", Include

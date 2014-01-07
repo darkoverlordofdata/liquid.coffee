@@ -15,25 +15,21 @@
 #
 Liquid = require('../../liquid')
 
-Array.prototype.inject = (memo, iterator, context) ->
-  @each (value, index) ->
-    memo = iterator.call(context, memo, value, index, @)
-  , @
-  memo
+# see https://github.com/danwrong/liquid-inheritance/blob/master/lib/tags/extends.rb
 
 class Liquid.Tags.Extends extends Liquid.Tag
 
-  Syntax = ///(#{Liquid.QuotedFragment.source})///
+  Syntax = ///(#{Liquid.StrictQuotedFragment.source})///
 
   constructor: (tagName, markup, tokens) ->
-    if ($ = Syntax.exec(markup))?
+    if $ = markup.match(Syntax)
       @name = $[1]
     else
       throw new Liquid.SyntaxError("Syntax Error in 'block' - Valid syntax: extends [template]")
 
     super tagName, markup, tokens if tokens?
 
-    @blocks = @nodelist.inject '', (m, node) =>
+    @blocks = @nodelist.inject {}, (m, node) =>
       if node instanceof Liquid.Tags.Block
         m[node.name] = node
         m
@@ -43,10 +39,10 @@ class Liquid.Tags.Extends extends Liquid.Tag
 
   render: (context) ->
     template = @loadTemplate(context)
-    parent_blocks = @findBlocks(template.root)
+    parentBlocks = @findBlocks(template.root)
 
-    @blocks.forEach (name, block) =>
-      if (pb = parent_blocks[name])?
+    for name, block of @blocks
+      if (pb = parentBlocks[name])?
         pb.parent = block.parent
         pb.addParent pb.nodelist
         pb.nodelist = block.nodelist
@@ -64,7 +60,7 @@ class Liquid.Tags.Extends extends Liquid.Tag
 
       if ///^#{Liquid.TagStart.source}///.test token
 
-        if ($ = token.match(///^#{Liquid.TagStart.source}\s*(\w+)\s*(.*)?#{Liquid.TagEnd.source}$///))?
+        if $ = token.match(///^#{Liquid.TagStart.source}\s*(\w+)\s*(.*)?#{Liquid.TagEnd.source}$///)
           # fetch the tag from registered blocks
           if (tag = Liquid.Template.tags[$[1]])?
             @nodelist.push new tag($[1], $[2], tokens)
@@ -75,17 +71,17 @@ class Liquid.Tags.Extends extends Liquid.Tag
         else
           throw new Liquid.SyntaxError("Tag '#{token}' was not properly terminated with regexp: #{Liquid.TagEnd.source} ")
 
-        else if ($ = token.match(///^#{Liquid.VariableStart.source}///))?
-          @nodelist.push @createVariable(token)
+      else if ($ = token.match(///^#{Liquid.VariableStart.source}///))?
+        @nodelist.push @createVariable(token)
 
-        else if token is ''
-          # pass
-        else
-          @nodelist.push token
+      else if token is ''
+        # pass
+      else
+        @nodelist.push token
 
 
   loadTemplate: (context) ->
-    source = Liquid.Template.fileSystem.readTemplateFile(context[@template_name])
+    source = Liquid.Tags.Include.readTemplateFromFileSystem(context.get(@template_name))
     Liquid.Template.parse source
 
   findBlocks: (node, blocks={}) ->
@@ -99,7 +95,7 @@ class Liquid.Tags.Extends extends Liquid.Tag
     blocks
 
   isExtending: (template) ->
-    template.root.nodelist.any (node) =>
+    template.root.nodelist.any (node) ->
       node instanceof Extends
 
 

@@ -32,7 +32,8 @@ task "test", "run tests", ->
       --reporter #{REPORTER}
       --require coffee-script
       --require test/test_helper.coffee
-    ", (err, output) ->
+      --recursive
+      ", (err, output) ->
     console.log output
     console.log err.message if err?
 
@@ -55,13 +56,13 @@ task 'build:src', 'Build the coffee source', ->
     util.log $stdout if $stdout if $stdout?
     util.log 'ok' unless $stdout?
 
-    #
-    # Build the final standalone
-    #
-    exec 'browserify --debug lib/liquid.js | uglifyjs > liquid.js', ($err, $stdout, $stderr) ->
-
-      util.log $err if $err if $err?
-      util.log $stderr if $stderr if $stderr?
-      util.log $stdout if $stdout if $stdout?
-      util.log 'ok' unless $stdout?
-
+#    #
+#    # Build the final standalone
+#    #
+#    exec 'browserify --debug lib/liquid.js | uglifyjs > liquid.js', ($err, $stdout, $stderr) ->
+#
+#      util.log $err if $err if $err?
+#      util.log $stderr if $stderr if $stderr?
+#      util.log $stdout if $stdout if $stdout?
+#      util.log 'ok' unless $stdout?
+#
