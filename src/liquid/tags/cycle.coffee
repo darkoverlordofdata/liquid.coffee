@@ -15,51 +15,54 @@
 #
 Liquid = require('../../liquid')
 
+# Cycle is usually used within a loop to alternate between values, like colors or DOM classes.
+#
+#   {% for item in items %}
+#     <div class="{% cycle 'red', 'green', 'blue' %}"> {{ item }} </div>
+#   {% end %}
+#
+#    <div class="red"> Item one </div>
+#    <div class="green"> Item two </div>
+#    <div class="blue"> Item three </div>
+#    <div class="red"> Item four </div>
+#    <div class="green"> Item five</div>
+#
 class Liquid.Tags.Cycle extends Liquid.Tag
 
-  tagSimpleSyntax: /"[^"]+"|'[^']+'|[^\s,|]+/
-  tagNamedSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)\s*\:\s*(.*)/
+  SimpleSyntax = ///^#{Liquid.StrictQuotedFragment.source}///
+  NamedSyntax  = ///^(#{Liquid.StrictQuotedFragment.source})\s*\:\s*(.*)///
+
   constructor: (tag, markup, tokens) ->
-    matches = undefined
-    variables = undefined
 
-    # Named first...
-    matches = markup.match(@tagNamedSyntax)
-    if matches
-      @variables = @variablesFromString(matches[2])
-      @name = matches[1]
+    if $ = markup.match(NamedSyntax)
+      @variables = @variablesFromString($[2])
+      @name = $[1]
+    else if $ = markup.match(SimpleSyntax)
+      @variables = @variablesFromString(markup)
+      @name = "'#{@variables.toString()}'"
     else
-
-      # Try simple...
-      matches = markup.match(@tagSimpleSyntax)
-      if matches
-        @variables = @variablesFromString(markup)
-        @name = "'" + @variables.toString() + "'"
-      else
-
-        # Punt
-        throw ("Syntax error in 'cycle' - Valid syntax: cycle [name :] var [, var2, var3 ...]")
+      throw new Liquid.SyntaxError("Syntax error in 'cycle' - Valid syntax: cycle [name :] var [, var2, var3 ...]")
     super tag, markup, tokens
 
   render: (context) ->
-    key = context.get(@name)
-    output = ""
-    context.registers["cycle"] = {}  unless context.registers["cycle"]
-    context.registers["cycle"][key] = 0  unless context.registers["cycle"][key]
+    context.registers.cycle or= {}
+    output = ''
+
     context.stack =>
-      iter = context.registers["cycle"][key]
-      results = context.get(@variables[iter])
-      iter += 1
-      iter = 0  if iter is @variables.length
-      context.registers["cycle"][key] = iter
-      output = results
+      key = context.get(@name)
+      iteration = context.registers.cycle[key] ? 0
+      result = context.get(@variables[iteration])
+      iteration += 1
+      iteration  = 0  if iteration >= @variables.length
+      context.registers.cycle[key] = iteration
+      output = result
 
     output
 
   variablesFromString: (markup) ->
-    markup.split(",").map (varname) ->
-      match = varname.match(/\s*("[^"]+"|'[^']+'|[^\s,|]+)\s*/)
-      (if (match[1]) then match[1] else null)
+    markup.split(',').map (varname) ->
+      $ = varname.match(///\s*(#{Liquid.StrictQuotedFragment.source})\s*///)
+      if $[1] then $[1] else null
 
 Liquid.Template.registerTag "cycle", Liquid.Tags.Cycle
 

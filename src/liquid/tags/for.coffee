@@ -15,76 +15,113 @@
 #
 Liquid = require('../../liquid')
 
+# "For" iterates over an array or collection.
+# Several useful variables are available to you within the loop.
+#
+# == Basic usage:
+#    {% for item in collection %}
+#      {{ forloop.index }}: {{ item.name }}
+#    {% endfor %}
+#
+# == Advanced usage:
+#    {% for item in collection %}
+#      <div {% if forloop.first %}class="first"{% endif %}>
+#        Item {{ forloop.index }}: {{ item.name }}
+#      </div>
+#    {% endfor %}
+#
+# You can also define a limit and offset much like SQL.  Remember
+# that offset starts at 0 for the first item.
+#
+#    {% for item in collection limit:5 offset:10 %}
+#      {{ item.name }}
+#    {% end %}
+#
+#  To reverse the for loop simply use {% for item in collection reversed %}
+#
+# == Available variables:
+#
+# forloop.name:: 'item-collection'
+# forloop.length:: Length of the loop
+# forloop.index:: The current item's position in the collection;
+#                 forloop.index starts at 1.
+#                 This is helpful for non-programmers who start believe
+#                 the first item in an array is 1, not 0.
+# forloop.index0:: The current item's position in the collection
+#                  where the first item is 0
+# forloop.rindex:: Number of items remaining in the loop
+#                  (length - index) where 1 is the last item.
+# forloop.rindex0:: Number of items remaining in the loop
+#                   where 0 is the last item.
+# forloop.first:: Returns true if the item is the first item.
+# forloop.last:: Returns true if the item is the last item.
+#
 class Liquid.Tags.For extends Liquid.Block
 
-  tagSyntax: /(\w+)\s+in\s+((?:\(?[\w\-\.\[\]]\)?)+)/
+  Syntax = ///(\w+)\s+in\s+(#{Liquid.StrictQuotedFragment.source})\s*(reversed)?///
+
   constructor: (tag, markup, tokens) ->
-    matches = markup.match(@tagSyntax)
-    if matches
-      @variableName = matches[1]
-      @collectionName = matches[2]
-      @name = @variableName + "-" + @collectionName
+    if $ = markup.match(Syntax)
+      @variableName = $[1]
+      @collectionName = $[2]
+      @name = "#{$[1]}-#{$[2]}"
+      @reversed = $[3]
       @attributes = {}
-      attrmarkup = markup.replace(@tagSyntax, "")
-      attMatchs = markup.match(/(\w*?)\s*\:\s*("[^"]+"|'[^']+'|[^\s,|]+)/g)
-      if attMatchs
-        attMatchs.forEach ((pair) ->
-          pair = pair.split(":")
-          @attributes[pair[0].trim()] = pair[1].trim()
-        ), this
+      markup.replace Liquid.TagAttributes, (key, value) =>
+        @attributes[key] = value
+        console.log key + ' ' + value
     else
-      throw ("Syntax error in 'for loop' - Valid syntax: for [item] in [collection]")
+      throw new Liquid.SyntaxError("Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]")
     super tag, markup, tokens
 
+
   render: (context) ->
-    output = []
-    collection = (context.get(@collectionName) or [])
-    range = [0, collection.length]
-    context.registers["for"] = {}  unless context.registers["for"]
-    if @attributes["limit"] or @attributes["offset"]
-      offset = 0
-      limit = 0
-      rangeEnd = 0
-      segment = null
-      if @attributes["offset"] is "continue"
-        offset = context.registers["for"][@name]
-      else
-        offset = context.get(@attributes["offset"]) or 0
-      limit = context.get(@attributes["limit"])
-      rangeEnd = (if (limit) then offset + limit + 1 else collection.length)
-      range = [offset, rangeEnd - 1]
+    context.registers.for = {} unless context.registers.for?
 
-      # Save the range end in the registers so that future calls to
-      # offset:continue have something to pick up
-      context.registers["for"][@name] = rangeEnd
+    collection = context.get(@collectionName)
 
-    # Assumes the collection is an array like object...
-    segment = collection.slice(range[0], range[1])
-    return ""  if not segment or segment.length is 0
+    return '' unless collection.forEach?
+
+    from = if @attributes['offset'] is 'continue'
+     context.registers.for[@name]
+    else
+      context.get(@attributes['offset'])
+
+    limit = context.get(@attributes['limit'])
+    to    = if limit then limit + from else null
+
+    from ?= 0
+    to ?= collection.length
+
+    segment = collection.slice(from, to)
+
+    return '' if segment.length is 0
+
+    segment.reverse() if @reversed
+
+    result = ''
+
+    length = segment.length
+
+    # Store our progress through the collection for the continue flag
+    context.registers.for[@name] = from + segment.length
+
     context.stack =>
-      length = segment.length
       segment.forEach (item, index) =>
         context.set @variableName, item
-        context.set "forloop",
-          name: @name
-          length: length
-          index: (index + 1)
-          index0: index
-          rindex: (length - index)
-          rindex0: (length - index - 1)
-          first: (index is 0)
-          last: (index is (length - 1))
+        context.set 'forloop',
+          name    : @name
+          length  : length
+          index   : index + 1
+          index0  : index
+          rindex  : length - index
+          rindex0 : length - index - 1
+          first   : (index is 0)
+          last    : (index is length - 1)
 
-        output.push (@renderAll(@nodelist, context) or []).join("")
-        #console.log index
-        #
-        # Handle any interrupts if they exist.
-        #
-#      if context.has_interrupt?
-#        interrupt = context.pop_interrupt
-#        break if interrupt.is_a? BreakInterrupt
-#        next if interrupt.is_a? ContinueInterrupt
+        result += (@renderAll(@nodelist, context) or []).join("")
+    result
 
-    [output].flatten.join ""
+
 
 Liquid.Template.registerTag "for", Liquid.Tags.For

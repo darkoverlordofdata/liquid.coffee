@@ -31,7 +31,7 @@ class Liquid.Strainer
     @context = context
 
   @globalFilter = (filter) ->
-    throw ArgumentError "Passed filter is not a module" unless 'function' is typeof filter
+    throw new Liquid.ArgumentError("Passed filter is not a module") unless typeof filter is 'function'
     Strainer.filters[filter.name] = filter
 
 
@@ -39,8 +39,7 @@ class Liquid.Strainer
   @create = (context) ->
     strainer = new Strainer(context)
     for k, m of Strainer.filters
-      for name, func of m
-        strainer[name] = func
+      strainer.extend m
     strainer
 
   respondTo: (methodName) ->

@@ -39,10 +39,10 @@ Object.defineProperties Array::,
   flatten: get: ->
     _flatten @
 
-  inject: value: (memo, func) ->
-    for item in @
-      memo = func(memo, item)
-    memo
+  inject: value: ($memo, $func) ->
+    for $item in @
+      $memo = $func.call(@, $memo, $item)
+    $memo
 
 
   find: value: ($func) ->

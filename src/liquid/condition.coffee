@@ -82,7 +82,7 @@ class Liquid.Condition
     left = context.get(left)
     right = context.get(right)
 
-    operation = Condition.operators[op] or new ArgumentError("Unknown operator #{op}")
+    operation = Condition.operators[op] or new Liquid.ArgumentError("Unknown operator #{op}")
 
     if operation.call?
       operation.call(@, left, right)

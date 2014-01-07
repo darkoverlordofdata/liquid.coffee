@@ -20,11 +20,13 @@ class Liquid.Tags.IfChanged extends Liquid.Block
   render: (context) ->
     output = ""
     context.stack =>
-      results = @renderAll(@nodelist, context).join("")
-      unless results is context.registers["ifchanged"]
-        output = results
-        context.registers["ifchanged"] = output
+      output = @renderAll(@nodelist, context).join('')
+      if output isnt context.registers.ifchanged
+        context.registers.ifchanged = output
+      else
+        output = ''
 
     output
+
 
 Liquid.Template.registerTag "ifchanged", Liquid.Tags.IfChanged

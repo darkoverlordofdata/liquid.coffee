@@ -53,7 +53,7 @@ class Liquid.Context
     filters = [filters].flatten.compact
 
     filters.forEach (f) ->
-      throw ArgumentError("Expected object but got: " + typeof (f))  unless typeof (f) is "function"
+      throw Liquid.ArgumentError("Expected object but got: " + typeof (f))  unless typeof (f) is "function"
       @strainer.extend f
 
 

@@ -79,7 +79,7 @@ class Liquid.Block extends Liquid.Tag
     if content = token.match(ContentOfVariable)
       new Liquid.Variable(content[1])
     else
-      throw ("Variable '" + token + "' was not properly terminated with: }}")
+      throw new Liquid.SyntaxError("Variable '#{token}' was not properly terminated with regexp: #{Liquid.VariableEnd.source} ")
 
   render: (context) ->
     @renderAll @nodelist, context
@@ -92,7 +92,7 @@ class Liquid.Block extends Liquid.Tag
         context.handleError(e)
 
   assertMissingDelimitation: ->
-    throw (@blockName + " tag was never closed")
+    throw new Liquid.SyntaxError("#{block_name} tag was never closed")
 
 
 

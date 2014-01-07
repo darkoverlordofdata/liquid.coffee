@@ -15,27 +15,29 @@
 #
 Liquid = require('../../liquid')
 
+# Unless is a conditional just like 'if' but works on the inverse logic.
+#
+#   {% unless x < 0 %} x is greater than zero {% end %}
+#
 class Liquid.Tags.Unless extends Liquid.Tags.If
+
   render: (context) ->
-    output = ""
+    output = ''
     context.stack =>
 
-      # The first block is called if it evaluates to false...
-      block = @blocks[0]
+      # First condition is interpreted backwards ( if not )
+      block = @blocks.first
       unless block.evaluate(context)
         output = @renderAll(block.attachment, context)
         return
 
-      # the rest are the same..
-      i = 1
-
-      while i < @blocks.length
-        block = @blocks[i]
+      # After the first condition unless works just like if
+      @blocks[1..-1].forEach (block) =>
         if block.evaluate(context)
           output = @renderAll(block.attachment, context)
           return
-        i++
 
-    [output].flatten.join ""
+      ''
+    output
 
 Liquid.Template.registerTag "unless", Liquid.Tags.Unless

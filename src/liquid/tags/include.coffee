@@ -17,55 +17,53 @@ Liquid = require('../../liquid')
 
 class Include extends Liquid.Tag
 
-  tagSyntax: /((?:"[^"]+"|'[^']+'|[^\s,|]+)+)(\s+(?:with|for)\s+((?:"[^"]+"|'[^']+'|[^\s,|]+)+))?/
+  Syntax = ///(#{Liquid.StrictQuotedFragment.source})(\s+(?:with|for)\s+(#{Liquid.StrictQuotedFragment.source}))?///
+
   constructor: (tag, markup, tokens) ->
-    matches = (markup or "").match(@tagSyntax)
-    if matches
-      @templateName = matches[1]
-      @templateNameVar = @templateName.substring(1, @templateName.length - 1)
-      @variableName = matches[3]
-      @attributes = {}
-      attMatchs = markup.match(/(\w*?)\s*\:\s*("[^"]+"|'[^']+'|[^\s,|]+)/g)
-      if attMatchs
-        attMatchs.forEach ((pair) ->
-          pair = pair.split(":")
-          @attributes[pair[0].trim()] = pair[1].trim()
-        ), this
+    if $ = markup.match(Syntax)
+
+      @templateName = $[1]
+      @variableName = $[3]
+      @attributes    = {}
+
+      markup.replace Liquid.TagAttributes, (key, value) =>
+        [key, value] = key.split(':')
+        @attributes[key] = value
+
     else
-      throw ("Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]")
+      throw new Liquid.SyntaxError("Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]")
+
     super tag, markup, tokens
 
+
   render: (context) ->
-    source = Liquid.Template.fileSystem.readTemplateFile(context.get(@templateName))
+    source = @_readTemplateFromFileSystem(context)
+
     partial = Liquid.Template.parse(source)
-    variable = context.get((@variableName or @templateNameVar))
-    output = ""
+    variable = context.get(@variableName or @templateName[1..-2])
+
+    output = ''
     context.stack =>
-
-      @attributes.forEach = (fun) -> #, thisp
-        throw "Object.forEach requires first argument to be a function"  unless typeof fun is "function"
-        i = 0
-        thisp = arguments[1]
-        for key, value of @
-          pair = [key, value]
-          pair.key = key
-          pair.value = value
-          fun.call thisp, pair, i, @
-          i++
-        null
-
-      @attributes.forEach (pair) ->
-        context.set pair.key, context.get(pair.value)
+      for key, value of @attributes
+        context.set key, context.get(value)
 
       if variable instanceof Array
-        output = variable.map((variable) ->
-          context.set @templateNameVar, variable
-          partial.render context
-        )
+        output = variable.map (variable) ->
+          context.set @templateName[1..-2], variable
+          partial.render(context)
+        output = output.join('')
       else
-        context.set @templateNameVar, variable
+        context.set @templateName[1..-2], variable
         output = partial.render(context)
 
-    output = [output].flatten.join("")
+    output
+
+
+  _readTemplateFromFileSystem: (context) ->
+
+    fileSystem = context.registers.fileSystem or Liquid.Template.fileSystem
+
+    fileSystem.readTemplateFile(context.get(@templateName))
+
 
 Liquid.Template.registerTag "include", Include

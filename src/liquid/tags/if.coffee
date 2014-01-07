@@ -15,9 +15,21 @@
 #
 Liquid = require('../../liquid')
 
+# If is the conditional block
+#
+#   {% if user.admin %}
+#     Admin user!
+#   {% else %}
+#     Not admin user
+#   {% endif %}
+#
+#    There are {% if count < 5 %} less {% else %} more {% endif %} items than you need.
+#
+#
 class Liquid.Tags.If extends Liquid.Block
-
-  tagSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)\s*([=!<>a-z_]+)?\s*("[^"]+"|'[^']+'|[^\s,|]+)?/
+  SyntaxHelp = "Syntax Error in tag 'if' - Valid syntax: if [expression]"
+  Syntax = ///(#{Liquid.StrictQuotedFragment.source})\s*([=!<>a-z_]+)?\s*(#{Liquid.StrictQuotedFragment.source})?///
+  ExpressionsAndOperators = ///(?:\b(?:\s?and\s?|\s?or\s?)\b|(?:\s*(?!\b(?:\s?and\s?|\s?or\s?)\b)(?:#{Liquid.StrictQuotedFragment.source}|\S+)\s*)+)///g
 
   constructor: (tag, markup, tokens) ->
     @nodelist = []
@@ -32,39 +44,41 @@ class Liquid.Tags.If extends Liquid.Block
       super tag, markup, tokens
 
   render: (context) ->
-    output = ""
+    output = ''
     context.stack =>
-      i = 0
-
-      while i < @blocks.length
-        block = @blocks[i]
+      for block in @blocks
         if block.evaluate(context)
           output = @renderAll(block.attachment, context)
           return
-        i++
+      ''
 
-    [output].flatten.join ""
+    output
+
 
   pushBlock: (tag, markup) ->
-    block = undefined
-    if tag is "else"
-      block = new Liquid.ElseCondition()
+    block = if tag is 'else'
+      new Liquid.ElseCondition
     else
-      expressions = markup.split(/\b(and|or)\b/).reverse()
-      expMatches = expressions.shift().match(@tagSyntax)
-      throw ("Syntax Error in tag '" + tag + "' - Valid syntax: " + tag + " [expression]")  unless expMatches
-      condition = new Liquid.Condition(expMatches[1], expMatches[2], expMatches[3])
+
+      expressions = markup.match(ExpressionsAndOperators).reverse()
+
+      throw new Liquid.SyntaxError(SyntaxHelp) unless $ = expressions.shift().match(Syntax)
+
+      condition = new Liquid.Condition($[1], $[2], $[3])
+
       while expressions.length > 0
         operator = expressions.shift()
-        expMatches = expressions.shift().match(@tagSyntax)
-        throw ("Syntax Error in tag '" + tag + "' - Valid syntax: " + tag + " [expression]")  unless expMatches
-        newCondition = new Liquid.Condition(expMatches[1], expMatches[2], expMatches[3])
+
+        throw new Liquid.SyntaxError(SyntaxHelp) unless expressions.shift().match(Syntax)
+
+        newCondition = new Liquid.Condition($[1], $[2], $[3])
         newCondition[operator] condition
         condition = newCondition
-      block = condition
-    block.attach []
-    @blocks.push block
-    @nodelist = block.attachment
+
+      condition
+
+    @blocks.push(block)
+    @nodelist = block.attach([])
 
 
 Liquid.Template.registerTag "if", Liquid.Tags.If

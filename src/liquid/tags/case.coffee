@@ -17,22 +17,20 @@ Liquid = require('../../liquid')
 
 class Liquid.Tags.Case extends Liquid.Block
 
-  Syntax     = ///(#{QuotedFragment})///
-  WhenSyntax = ///(#{QuotedFragment})(?:(?:\s+or\s+|\s*\,\s*)(#{QuotedFragment}.*))?///
+  Syntax      =  ///(#{Liquid.StrictQuotedFragment.source})///
+  WhenSyntax  =  ///(#{Liquid.StrictQuotedFragment.source})(?:(?:\s+or\s+|\s*\,\s*)(#{Liquid.StrictQuotedFragment.source}.*))?///
 
-  tagSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)/
-  tagWhenSyntax: /("[^"]+"|'[^']+'|[^\s,|]+)(?:(?:\s+or\s+|\s*\,\s*)("[^"]+"|'[^']+'|[^\s,|]+.*))?/
   constructor: (tagName, markup, tokens) ->
     @blocks = []
     @nodelist = []
-    parts = markup.match(@tagSyntax)
-    if parts
-      @left = parts[1]
+    if $ = markup.match(Syntax)
+      @left = $[1]
     else
-      throw ("Syntax error in 'case' - Valid syntax: case [condition]")
+      throw new Liquid.SyntaxError("Syntax error in 'case' - Valid syntax: case [condition]")
     super tagName, markup, tokens
 
   unknownTag: (tag, markup, tokens) ->
+    @nodelist = []
     switch tag
       when "when"
         @recordWhenCondition markup
@@ -42,38 +40,39 @@ class Liquid.Tags.Case extends Liquid.Block
         super tag, markup, tokens
 
   render: (context) ->
-    output = []
-    execElseBlock = true
-
+    output = ''
     context.stack =>
-      i = 0
+      execElseBlock = true
 
-      while i < @blocks.length
-        block = @blocks[i]
+      @blocks.forEach (block) =>
         if block.else()
-          output = [output, @renderAll(block.attachment, context)].flatten if execElseBlock is true
-          return output
+          if execElseBlock is true
+            output += @renderAll(block.attachment, context)
+
         else if block.evaluate(context)
           execElseBlock = false
-          output = [output, @renderAll(block.attachment, context)].flatten
-        i++
-
+          output += @renderAll(block.attachment, context)
     output
+
 
   recordWhenCondition: (markup) ->
     while markup
-      parts = markup.match(@tagWhenSyntax)
-      throw ("Syntax error in tag 'case' - Valid when condition: {% when [condition] [or condition2...] %} ")  unless parts
-      markup = parts[2]
-      block = new Liquid.Condition(@left, "==", parts[1])
+      # Create a new nodelist and assign it to the new block
+      if not ($ = markup.match(WhenSyntax))
+        throw new Liquid.SyntaxError("Syntax error in tag 'case' - Valid when condition: {% when [condition] [or condition2...] %} ")
+
+      markup = $[2]
+      block = new Liquid.Condition(@left, "==", $[1])
+      block.attach @nodelist
       @blocks.push block
-      @nodelist = block.attach([])
 
   recordElseCondition: (markup) ->
-    throw ("Syntax error in tag 'case' - Valid else condition: {% else %} (no parameters) ")  unless (markup or "").trim() is ""
+    unless (markup or "").trim() is ""
+      throw new Liquid.SyntaxError("Syntax error in tag 'case' - Valid else condition: {% else %} (no parameters) ")  unless (markup or "").trim() is ""
+
     block = new Liquid.ElseCondition()
+    block.attach @nodelist
     @blocks.push block
-    @nodelist = block.attach([])
 
 
 
