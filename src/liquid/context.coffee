@@ -17,7 +17,7 @@ Liquid = require('../liquid')
 
 # Context keeps the variable stack and resolves variables, as well as keywords
 #
-#   context.get('variable') = 'testing'
+#   context.set 'variable', 'testing'
 #   context.get('variable') #=> 'testing'
 #   context.get('true')     #=> true
 #   context.get('10.2232')  #=> 10.2232
