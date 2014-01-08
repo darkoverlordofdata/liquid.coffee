@@ -2,9 +2,13 @@
 
 Liquid Template library used by Huginn
 
-A clone of (liquid.js) [https://github.com/darthapo/liquid.js]
+A coffee-script port of (liquid 2.2.2) [https://github.com/Shopify/liquid-old]
 
-## Modifications
+## History
+
+    0.0.1
+
+        port of (liquid.js) [https://github.com/darthapo/liquid.js]
 
     0.0.2
 
