@@ -69,7 +69,6 @@ class Liquid.Tags.For extends Liquid.Block
       @attributes = {}
       markup.replace Liquid.TagAttributes, (key, value) =>
         @attributes[key] = value
-        console.log key + ' ' + value
     else
       throw new Liquid.SyntaxError("Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]")
     super tag, markup, tokens
@@ -88,10 +87,7 @@ class Liquid.Tags.For extends Liquid.Block
       context.get(@attributes['offset'])
 
     limit = context.get(@attributes['limit'])
-    to    = if limit then limit + from else null
-
-    from ?= 0
-    to ?= collection.length
+    to    = if limit then (limit + from - 1) else collection.length
 
     segment = collection.slice(from, to)
 

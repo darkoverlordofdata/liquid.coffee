@@ -67,7 +67,7 @@ class Liquid.Tags.Extends extends Liquid.Tag
           else
             # this tag is not registered with the system
             # pass it to the current block for special handling or error reporting
-            @unknownTag($[1], $[2], tokens)
+            @unknownTag $[1], $[2], tokens
         else
           throw new Liquid.SyntaxError("Tag '#{token}' was not properly terminated with regexp: #{Liquid.TagEnd.source} ")
 

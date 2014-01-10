@@ -13,40 +13,39 @@
 #
 # not-ruby
 #
+# Syntactic sugar to make the port from ruby flow more easily
+#
 
-_flatten = ($list) ->
-  return [] unless $list?
-  $a = []
-  for $item in $list
-    if Array.isArray($item)
-      $a = $a.concat _flatten($item)
-    else
-      $a.push $item
-  return $a
+
+Object.defineProperties Array,
+
+  flatten: value: ($this) ->
+    return [] unless $this?
+    $a = []
+    for $that in $this
+      if Array.isArray($that)
+        $a = $a.concat Array.flatten($that)
+      else
+        $a.push $that
+    return $a
+
+  inject: value: ($this, $memo, $func) ->
+    for $that in $this
+      $memo = $func.call($this, $memo, $that)
+    $memo
+
+  find: value: ($this, $func) ->
+    for $that in $this
+      if $func.call($this, $that)
+        return $that
 
 
 Object.defineProperties Array::,
 
-  first: get: ->
-    @[0]
-
-  last: get: ->
-    @[@length-1]
-
-  compact: get: ->
-    ($item for $item in @ when $item)
-
-  flatten: get: ->
-    _flatten @
-
-  inject: value: ($memo, $func) ->
-    for $item in @
-      $memo = $func.call(@, $memo, $item)
-    $memo
-
-
-  find: value: ($func) ->
-    for $item in @
-      if $func.call(@, $item)
-        return $item
+  first: get: -> @[0]
+  last: get: -> @[@length-1]
+  compact: get: -> ($that for $that in @ when $that)
+  flatten: get: -> Array.flatten @
+  inject: value: ($memo, $func) -> Array.inject @, $memo, $func
+  find: value: ($func) -> Array.find @, $func
 
