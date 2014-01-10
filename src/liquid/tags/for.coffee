@@ -60,6 +60,7 @@ class Liquid.Tags.For extends Liquid.Block
 
   Syntax = ///(\w+)\s+in\s+(#{Liquid.StrictQuotedFragment.source})\s*(reversed)?///
 
+
   constructor: (tag, markup, tokens) ->
     if $ = markup.match(Syntax)
       @variableName = $[1]
@@ -67,7 +68,7 @@ class Liquid.Tags.For extends Liquid.Block
       @name = "#{$[1]}-#{$[2]}"
       @reversed = $[3]
       @attributes = {}
-      markup.replace Liquid.TagAttributes, (key, value) =>
+      markup.replace Liquid.TagAttributes, ($0, key, value) =>
         @attributes[key] = value
     else
       throw new Liquid.SyntaxError("Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]")
@@ -87,7 +88,7 @@ class Liquid.Tags.For extends Liquid.Block
       context.get(@attributes['offset'])
 
     limit = context.get(@attributes['limit'])
-    to    = if limit then (limit + from - 1) else collection.length
+    to    = if limit then (limit + from) else collection.length
 
     segment = collection.slice(from, to)
 

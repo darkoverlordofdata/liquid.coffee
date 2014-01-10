@@ -55,6 +55,9 @@ class Liquid.Tags.If extends Liquid.Block
     output
 
 
+  renderAll: (list, context) ->
+    super(list, context).join('')
+
   pushBlock: (tag, markup) ->
     block = if tag is 'else'
       new Liquid.ElseCondition
