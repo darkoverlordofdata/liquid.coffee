@@ -41,7 +41,6 @@ module.exports = class Liquid
   @LiteralShorthand           = ///^(?:\{\{\{\s?)(.*?)(?:\s*\}\}\})$///
 
 require './liquid/version'
-require './liquid/extensions'
 require './liquid/drop'
 require './liquid/errors'
 require './liquid/interrupt'
