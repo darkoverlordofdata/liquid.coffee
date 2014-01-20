@@ -17,6 +17,7 @@ Liquid = require('../liquid')
 
 class Liquid.Tag
 
+
   constructor: (tagName, markup, tokens) ->
     @tagName = tagName
     @markup = markup

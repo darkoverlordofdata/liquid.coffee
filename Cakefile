@@ -56,13 +56,3 @@ task 'build:src', 'Build the coffee source', ->
     util.log $stdout if $stdout if $stdout?
     util.log 'ok' unless $stdout?
 
-#    #
-#    # Build the final standalone
-#    #
-#    exec 'browserify --debug lib/liquid.js | uglifyjs > liquid.js', ($err, $stdout, $stderr) ->
-#
-#      util.log $err if $err if $err?
-#      util.log $stderr if $stderr if $stderr?
-#      util.log $stdout if $stdout if $stdout?
-#      util.log 'ok' unless $stdout?
-#
