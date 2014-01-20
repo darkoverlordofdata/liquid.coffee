@@ -59,8 +59,13 @@ class Liquid.Tags.Cycle extends Liquid.Tag
 
     output
 
+#  variablesFromString: (markup) ->
+#    markup.split(',').map (varname) ->
+#      $ = varname.match(///\s*(#{Liquid.StrictQuotedFragment.source})\s*///)
+#      if $[1] then $[1] else null
+
   variablesFromString: (markup) ->
-    markup.split(',').map (varname) ->
+    for varname in markup.split(',')
       $ = varname.match(///\s*(#{Liquid.StrictQuotedFragment.source})\s*///)
       if $[1] then $[1] else null
 

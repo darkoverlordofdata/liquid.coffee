@@ -80,7 +80,7 @@ class Liquid.Tags.For extends Liquid.Block
 
     collection = context.get(@collectionName)
 
-    return '' unless collection.forEach?
+    return '' unless Array.isArray(collection)
 
     from = if @attributes['offset'] is 'continue'
      context.registers.for[@name]
@@ -104,7 +104,8 @@ class Liquid.Tags.For extends Liquid.Block
     context.registers.for[@name] = from + segment.length
 
     context.stack =>
-      segment.forEach (item, index) =>
+      #segment.forEach (item, index) =>
+      for item, index in segment
         context.set @variableName, item
         context.set 'forloop',
           name    : @name
@@ -116,7 +117,7 @@ class Liquid.Tags.For extends Liquid.Block
           first   : (index is 0)
           last    : (index is length - 1)
 
-        result += (@renderAll(@nodelist, context) or []).join("")
+        result += @renderAll(@nodelist, context)
     result
 
 

@@ -20,7 +20,7 @@ class Liquid.Tags.IfChanged extends Liquid.Block
   render: (context) ->
     output = ""
     context.stack =>
-      output = @renderAll(@nodelist, context).join('')
+      output = @renderAll(@nodelist, context)
       if output isnt context.registers.ifchanged
         context.registers.ifchanged = output
       else

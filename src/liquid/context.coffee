@@ -36,8 +36,28 @@ class Liquid.Context
     'true': true
     'false': false
 
+  compact = ($this) -> ($that for $that in $this when $that)
+
+  #
+  # flatten a nested list
+  #
+  # @param  [Array] list  nested list
+  # @return [Array] the flattened list
+  #
+  flatten = ($list) ->
+
+    return [] unless $list?
+
+    $a = []
+    for $item in $list
+      if Array.isArray($item)
+        $a = $a.concat flatten($item)
+      else
+        $a.push $item
+    return $a
+
   constructor: (environments, outerScope, registers, rethrowErrors) ->
-    @environments   = [environments].flatten
+    @environments   = flatten([environments])
     @scopes         = [(outerScope or {})]
     @registers      = registers
     @errors         = []
@@ -49,9 +69,10 @@ class Liquid.Context
   # Note that this does not register the filters with the main Template object. see <tt>Template.register_filter</tt>
   # for that
   addFilters: (filters) ->
-    filters = [filters].flatten.compact
+    filters = compact(flatten([filters]))
 
-    filters.forEach (f) ->
+#    filters.forEach (f) ->
+    for f in filters
       throw Liquid.ArgumentError("Expected module but got: " + typeof (f))  unless typeof (f) is "function"
       @strainer.extend f
 
@@ -65,11 +86,11 @@ class Liquid.Context
         throw "Liquid error: #{e.message}"
 
 
-  invoke: (method, args) ->
+  invoke: (method, args...) ->
     if @strainer.respondTo(method)
-      @strainer[method].apply(@strainer, args)
+      @strainer[method](args...)
     else
-      args.first
+      args[0]
 
   # Push new local scope on the stack. use <tt>Context#stack</tt> instead
   push: (newScope = {}) ->
@@ -146,7 +167,9 @@ class Liquid.Context
   # Fetches an object starting at the local scope and then moving up the hierachy
   findVariable: (key) ->
 
-    scope = @scopes.find (s) -> s[key]?
+    #scope = @scopes.find (s) -> s[key]?
+    for s in @scopes
+      scope = s if s[key]?
 
     unless scope?
       for e in @environments
@@ -154,7 +177,7 @@ class Liquid.Context
           scope = e
           break
 
-    scope     or= @environments.last || @scopes.last
+    scope     or= @environments[@environments.length-1] || @scopes[@scopes.length-1]
     variable  or= @lookupAndEvaluate(scope, key)
 
     variable?.setContext? @
@@ -180,7 +203,8 @@ class Liquid.Context
 
     if object = @findVariable(firstPart)
 
-      parts.forEach (part) =>
+      #parts.forEach (part) =>
+      for part in parts
 
         if ($ = squareBracketed.exec(part))
           part = @resolve($[1])

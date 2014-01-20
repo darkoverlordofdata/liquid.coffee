@@ -44,7 +44,8 @@ class Liquid.Tags.Case extends Liquid.Block
     context.stack =>
       execElseBlock = true
 
-      @blocks.forEach (block) =>
+      #@blocks.forEach (block) =>
+      for block in @blocks
         if block.else()
           if execElseBlock is true
             output += @renderAll(block.attachment, context)

@@ -26,13 +26,13 @@ class Liquid.Tags.Unless extends Liquid.Tags.If
     context.stack =>
 
       # First condition is interpreted backwards ( if not )
-      block = @blocks.first
+      block = @blocks[0]
       unless block.evaluate(context)
         output = @renderAll(block.attachment, context)
         return
 
       # After the first condition unless works just like if
-      @blocks[1..-1].forEach (block) =>
+      for block in @blocks[1..-1]
         if block.evaluate(context)
           output = @renderAll(block.attachment, context)
           return

@@ -48,10 +48,10 @@ class Include extends Liquid.Tag
         context.set key, context.get(value)
 
       if variable instanceof Array
-        output = variable.map (variable) ->
-          context.set @templateName[1..-2], variable
-          partial.render(context)
-        output = output.join('')
+        output = ''
+        for v in variable
+          context.set @templateName[1..-2], v
+          output += partial.render(context)
       else
         context.set @templateName[1..-2], variable
         output = partial.render(context)

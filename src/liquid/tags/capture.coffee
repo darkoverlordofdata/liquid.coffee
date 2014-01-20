@@ -39,7 +39,8 @@ class Liquid.Tags.Capture extends Liquid.Block
 
   render: (context) ->
     output = super(context)
-    context.scopes.last[@to] = output
+    last = context.scopes.length-1
+    context.scopes[last][@to] = output
     ''
 
 Liquid.Template.registerTag "capture", Liquid.Tags.Capture

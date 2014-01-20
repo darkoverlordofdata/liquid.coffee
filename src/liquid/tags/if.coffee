@@ -27,6 +27,7 @@ Liquid = require('../../liquid')
 #
 #
 class Liquid.Tags.If extends Liquid.Block
+
   SyntaxHelp = "Syntax Error in tag 'if' - Valid syntax: if [expression]"
   Syntax = ///(#{Liquid.StrictQuotedFragment.source})\s*([=!<>a-z_]+)?\s*(#{Liquid.StrictQuotedFragment.source})?///
   ExpressionsAndOperators = ///(?:\b(?:\s?and\s?|\s?or\s?)\b|(?:\s*(?!\b(?:\s?and\s?|\s?or\s?)\b)(?:#{Liquid.StrictQuotedFragment.source}|\S+)\s*)+)///g
@@ -51,12 +52,8 @@ class Liquid.Tags.If extends Liquid.Block
           output = @renderAll(block.attachment, context)
           return
       ''
-
     output
 
-
-  renderAll: (list, context) ->
-    super(list, context).join('')
 
   pushBlock: (tag, markup) ->
     block = if tag is 'else'

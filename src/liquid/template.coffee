@@ -74,17 +74,17 @@ class Liquid.Template
   render: (args...) ->
     return '' if @root is null
 
-    context = if args.first instanceof Liquid.Context
+    context = if args[0] instanceof Liquid.Context
       args.shift()
-    else if args.first instanceof Object
+    else if args[0] instanceof Object
       new Liquid.Context([args.shift(), @assigns], @instanceAssigns, @registers, @rethrowErrors)
-    else if not args.first?
+    else if not args[0]?
       new Liquid.Context(@assigns, @instanceAssigns, @registers, @rethrowErrors)
     else
       throw new Liquid.ArgumentErro( "Expect Hash or Liquid::Context as parameter")
 
-
-    if args.last instanceof Object
+    last = args.length-1
+    if args[last] instanceof Object
       options =  args.pop()
 
       if 'registers' of options
@@ -94,10 +94,10 @@ class Liquid.Template
       if 'filters' of options
         context.addFilters options.filters
 
-    else if args.last instanceof Function
+    else if args[last] instanceof Function
       context.addFilters args.pop()
 
-    else if args.last instanceof Array
+    else if args[last] instanceof Array
       context.addFilters args.pop()
 
     try

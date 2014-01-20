@@ -24,6 +24,8 @@ Liquid = require('../liquid')
 #
 class Liquid.Condition
 
+  compact = ($this) -> ($that for $that in $this when $that)
+
   @operators =
     "==":     (l, r) -> l is r
     "=":      (l, r) -> l is r
@@ -72,7 +74,7 @@ class Liquid.Condition
     false
 
   toString: ->
-    "#<Condition #{[@left, @operator, @right].compact.join(' ')}>"
+    "#<Condition #{compact([@left, @operator, @right]).join(' ')}>"
 
   interpretCondition: (left, right, op, context) ->
     # If the operator is empty this means that the decision statement is just

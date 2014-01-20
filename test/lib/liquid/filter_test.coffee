@@ -1,6 +1,8 @@
 describe "Liquid filters ", ->
 
-  
+  it "{{ string | krap }}", ->
+    render("{{user | krap}}", {user:'Bob'}).should.equal 'Bob'
+
   it "{{ string | size }}", ->
     render("{{user | size}}", {user:'Bob'}).should.equal '3'
     render("{{user|size}}", {user:'Bob'}).should.equal '3'

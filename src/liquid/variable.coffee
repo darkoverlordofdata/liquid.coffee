@@ -30,6 +30,24 @@ class Liquid.Variable
 
   FilterParser = ///(?:#{Liquid.FilterSeparator.source}|(?:\s*(?!(?:#{Liquid.FilterSeparator.source}))(?:#{Liquid.QuotedFragment.source}|\S+)\s*)+)///
 
+  compact = ($this) -> ($that for $that in $this when $that)
+  #
+  # flatten a nested list
+  #
+  # @param  [Array] list  nested list
+  # @return [Array] the flattened list
+  #
+  flatten = ($list) ->
+
+    return [] unless $list?
+
+    $a = []
+    for $item in $list
+      if Array.isArray($item)
+        $a = $a.concat flatten($item)
+      else
+        $a.push $item
+    return $a
 
   constructor: (markup) ->
     @markup = markup
@@ -40,25 +58,27 @@ class Liquid.Variable
       @name = match[1]
       if match[2].match(///#{Liquid.FilterSeparator.source}\s*(.*)///)
         filters = match[2].match(///#{FilterParser.source}///g)
-        filters.forEach (f) =>
+        #filters.forEach (f) =>
+        for f in filters
           if matches = f.match(/\s*(\w+)/)
             filtername = matches[1]
             filterargs = f.split(///(?:#{Liquid.FilterArgumentSeparator}|#{Liquid.ArgumentSeparator})\s*(#{Liquid.QuotedFragment.source})///)
             filterargs.shift()
             filterargs.pop()
-            @filters.push [filtername, filterargs.flatten.compact]
-
+            @filters.push [filtername, compact(flatten(filterargs))]
 
 
   render: (context) ->
     return '' unless @name?
-    @filters.inject context.get(@name), (output, filter) ->
-      filterargs = filter[1].map (a) ->
-        context.get(a)
+    output = context.get(@name)
+    for filter in @filters
+      filterargs = []
+      for a in filter[1]
+        filterargs.push context.get(a)
+
       try
-        output = context.invoke(filter[0], [output].concat(filterargs))
+        output = context.invoke(filter[0], output, filterargs...)
       catch e
         throw new Liquid.FilterNotFound("Error - filter '#{filter[0]}' in '#{@markup.trim()}' could not be found.")
 
-
-
+    output

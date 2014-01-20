@@ -38,7 +38,8 @@ class Liquid.Tags.Assign extends Liquid.Tag
 
 
   render: (context) ->
-    context.scopes.last[@to] = context.get(@from)
+    last = context.scopes.length-1
+    context.scopes[last][@to] = context.get(@from)
     ""
 
 Liquid.Template.registerTag "assign", Liquid.Tags.Assign

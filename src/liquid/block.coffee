@@ -85,11 +85,13 @@ class Liquid.Block extends Liquid.Tag
     @renderAll @nodelist, context
 
   renderAll: (list, context) ->
-    (list or []).map (token, i) ->
+    output = []
+    for token in list
       try
-        if token.render? then token.render(context) else token
+        output.push if token.render? then token.render(context) else token
       catch e
         context.handleError(e)
+    output.join('')
 
   assertMissingDelimitation: ->
     throw new Liquid.SyntaxError("#{block_name} tag was never closed")
