@@ -56,21 +56,21 @@ task 'build:src', 'Build the coffee source', ->
     util.log $stdout if $stdout if $stdout?
     util.log 'ok' unless $stdout?
 
-    exec 'browserify  lib/liquid.js --debug --standalone Liquid > dist/liquid-0.0.6.dbg.js', ($err, $stdout, $stderr) ->
+    exec 'browserify  lib/liquid.js --debug --standalone Liquid > dist/liquid-0.0.7.dbg.js', ($err, $stdout, $stderr) ->
 
       util.log $err if $err if $err?
       util.log $stderr if $stderr if $stderr?
       util.log $stdout if $stdout if $stdout?
       util.log 'ok' unless $stdout?
 
-      exec 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid-0.0.6.min.js', ($err, $stdout, $stderr) ->
+      exec 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid-0.0.7.min.js', ($err, $stdout, $stderr) ->
 
         util.log $err if $err if $err?
         util.log $stderr if $stderr if $stderr?
         util.log $stdout if $stdout if $stdout?
         util.log 'ok' unless $stdout?
 
-        exec 'browserify  lib/liquid.js --standalone Liquid > dist/liquid-0.0.6.js', ($err, $stdout, $stderr) ->
+        exec 'browserify  lib/liquid.js --standalone Liquid > dist/liquid-0.0.7.js', ($err, $stdout, $stderr) ->
 
           util.log $err if $err if $err?
           util.log $stderr if $stderr if $stderr?
