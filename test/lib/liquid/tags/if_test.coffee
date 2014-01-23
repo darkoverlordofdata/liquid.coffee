@@ -1,6 +1,7 @@
 describe 'Liquid if tag ', ->
 
   it "{% if conditions %}{% else %}{% endif %}", ->
+    render("{% if year == 2007 %}2007{% endif %}", year: 2007).should.equal "2007"
     render("{% if true %}TRUE{% endif %}").should.equal "TRUE"
     render("{% if 1 == 1 %}TRUE{% endif %}").should.equal "TRUE"
     render("{% if 1 != 1 %}TRUE{% endif %}").should.equal ""

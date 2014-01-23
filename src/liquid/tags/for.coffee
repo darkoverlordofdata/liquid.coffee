@@ -118,6 +118,13 @@ class Liquid.Tags.For extends Liquid.Block
           last    : (index is length - 1)
 
         result += @renderAll(@nodelist, context)
+        # Handle any interrupts if they exist.
+        if context.hasInterrupt()
+          interrupt = context.popInterrupt()
+          break if interrupt instanceof Liquid.BreakInterrupt
+          continue if interrupt instanceof Liquid.ContinueInterrupt
+
+
     result
 
 

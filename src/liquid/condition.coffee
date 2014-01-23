@@ -24,7 +24,7 @@ Liquid = require('../liquid')
 #
 class Liquid.Condition
 
-  compact = ($this) -> ($that for $that in $this when $that)
+  {compact} = require('./util')
 
   @operators =
     "==":     (l, r) -> l is r

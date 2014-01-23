@@ -87,7 +87,14 @@ class Liquid.Block extends Liquid.Tag
   renderAll: (list, context) ->
     output = []
     for token in list
+      # Break out if we have any unhandled interrupts.
+      break if context.hasInterrupt()
+
       try
+        if token instanceof Liquid.Tags.Continue or token instanceof Liquid.Tags.Break
+          context.pushInterrupt token.interrupt
+          break
+
         output.push if token.render? then token.render(context) else token
       catch e
         context.handleError(e)

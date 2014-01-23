@@ -4,12 +4,25 @@ Liquid Template library used by Huginn
 
 A coffee-script port of (liquid 2.2.2) [https://github.com/Shopify/liquid-old]
 
+Plus:
+
+    LiquidInheritance tags
+        block
+        extend
+
+    Liquid3 tags
+        break
+        continue
+        decrement
+        increment
+
+
 
 ## License
 
 (The MIT License)
 
-Copyright (c) 2012 - 2013 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
+Copyright (c) 2013 - 2014 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

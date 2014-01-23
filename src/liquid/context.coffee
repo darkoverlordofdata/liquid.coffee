@@ -36,25 +36,7 @@ class Liquid.Context
     'true': true
     'false': false
 
-  compact = ($this) -> ($that for $that in $this when $that)
-
-  #
-  # flatten a nested list
-  #
-  # @param  [Array] list  nested list
-  # @return [Array] the flattened list
-  #
-  flatten = ($list) ->
-
-    return [] unless $list?
-
-    $a = []
-    for $item in $list
-      if Array.isArray($item)
-        $a = $a.concat flatten($item)
-      else
-        $a.push $item
-    return $a
+  {compact, flatten} = require('./util')
 
   constructor: (environments, outerScope, registers, rethrowErrors) ->
     @environments   = flatten([environments])
@@ -63,6 +45,7 @@ class Liquid.Context
     @errors         = []
     @rethrowErrors  = rethrowErrors
     @strainer       = Liquid.Strainer.create(@)
+    @interrupts     = []
 
   # Adds filters to this context.
   #
@@ -76,12 +59,23 @@ class Liquid.Context
       throw Liquid.ArgumentError("Expected module but got: " + typeof (f))  unless typeof (f) is "function"
       @strainer.extend f
 
+  # are there any not handled interrupts?
+  hasInterrupt: ->
+    @interrupts.length>0
+
+  # push an interrupt to the stack. this interrupt is considered not handled.
+  pushInterrupt: (e) ->
+    @interrupts.push e
+
+  # pop an interrupt from the stack
+  popInterrupt: ->
+    @interrupts.pop()
 
   handleError: (e) ->
     @errors.push e
     if @rethrowErrors
       if e instanceof Liquid.SyntaxError
-       throw "Liquid syntax error: #{e.message}"
+        throw "Liquid syntax error: #{e.message}"
       else
         throw "Liquid error: #{e.message}"
 

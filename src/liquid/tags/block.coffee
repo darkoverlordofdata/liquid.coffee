@@ -15,14 +15,13 @@
 #
 Liquid = require('../../liquid')
 
-# see https://github.com/danwrong/liquid-inheritance/blob/master/lib/tags/block.rb
+# @see https://github.com/danwrong/liquid-inheritance/blob/master/lib/tags/block.rb
 
 class Liquid.Tags.BlockDrop extends Liquid.Drop
 
   constructor: (@block) ->
+    Object.defineProperty @, 'super', get: -> @block.callSuper @context
 
-  super: ->
-    @block.callSuper @context
 
 
 class Liquid.Tags.Block extends Liquid.Block
@@ -42,14 +41,14 @@ class Liquid.Tags.Block extends Liquid.Block
 
   render: (context) ->
     context.stack =>
-      context.set 'block', new Liquid.BlockDrop(@)
+      context.set 'block', new Liquid.Tags.BlockDrop(@)
       @renderAll @nodelist, context
 
   addParent: (nodelist) ->
     if @parent?
       @parent.addParent nodelist
     else
-      @parent = Liquid.Tags.Block(@tagName, @name)
+      @parent = new Block(@tagName, @name)
       @parent.nodelist = nodelist
 
   callSuper: (context) ->

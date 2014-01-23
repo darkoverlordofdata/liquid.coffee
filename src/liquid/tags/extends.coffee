@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| extends.coffee
+#| liquid.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -15,27 +15,30 @@
 #
 Liquid = require('../../liquid')
 
-# see https://github.com/danwrong/liquid-inheritance/blob/master/lib/tags/extends.rb
+class Liquid.Tags.Extends  extends Liquid.Block
 
-class Liquid.Tags.Extends extends Liquid.Tag
-
-  Syntax = ///(#{Liquid.StrictQuotedFragment.source})///
+  Syntax            = ///(#{Liquid.QuotedFragment.source})///
+  IsTag             = ///^#{Liquid.TagStart.source}///
+  IsVariable        = ///^#{Liquid.VariableStart.source}///
+  FullToken         = ///^#{Liquid.TagStart.source}\s*(\w+)\s*(.*)?#{Liquid.TagEnd.source}$///
+  ContentOfVariable = ///^#{Liquid.VariableStart.source}(.*)#{Liquid.VariableEnd.source}$///
 
   constructor: (tagName, markup, tokens) ->
-    if $ = markup.match(Syntax)
-      @name = $[1]
+
+    if ($ = markup.match(Syntax))
+      @templateName = $[1]
     else
-      throw new Liquid.SyntaxError("Syntax Error in 'block' - Valid syntax: extends [template]")
+      throw new Liquid.SyntaxError("Syntax Error in 'extends' - Valid syntax: extends [template]")
+    super
 
-    super tagName, markup, tokens if tokens?
-
-    @blocks = @nodelist.inject {}, (m, node) =>
-      if node instanceof Liquid.Tags.Block
-        m[node.name] = node
-        m
+    m = {}
+    for node in @nodelist
+      m[node.name] = node if node instanceof Liquid.Tags.Block
+    @blocks = m
 
   parse: (tokens) ->
     @parseAll tokens
+
 
   render: (context) ->
     template = @loadTemplate(context)
@@ -50,53 +53,49 @@ class Liquid.Tags.Extends extends Liquid.Tag
         if @isExtending(template)
           template.root.nodelist.push block
 
-    template.render context
+    template.render(context)
 
   parseAll: (tokens) ->
-    @nodelist or= []
+    @nodelist ||= []
     @nodelist.length = 0
 
     while (token = tokens.shift())?
-
-      if ///^#{Liquid.TagStart.source}///.test token
-
-        if $ = token.match(///^#{Liquid.TagStart.source}\s*(\w+)\s*(.*)?#{Liquid.TagEnd.source}$///)
+      if IsTag.test token
+        if ($ = token.match(FullToken))
           # fetch the tag from registered blocks
-          if (tag = Liquid.Template.tags[$[1]])?
+          if tag = Liquid.Template.tags[$[1]]
             @nodelist.push new tag($[1], $[2], tokens)
           else
             # this tag is not registered with the system
             # pass it to the current block for special handling or error reporting
             @unknownTag $[1], $[2], tokens
         else
-          throw new Liquid.SyntaxError("Tag '#{token}' was not properly terminated with regexp: #{Liquid.TagEnd.source} ")
-
-      else if ($ = token.match(///^#{Liquid.VariableStart.source}///))?
+          throw new Liquid.SyntaxError("Tag '#{token}' was not properly terminated with regexp: #{TagEnd.inspect} ")
+      else if IsVariable.test token
         @nodelist.push @createVariable(token)
-
-      else if token is ''
+      else if token is  ''
         # pass
       else
         @nodelist.push token
 
-
   loadTemplate: (context) ->
-    source = Liquid.Tags.Include.readTemplateFromFileSystem(context.get(@template_name))
+    source = Liquid.Template.fileSystem.readTemplateFile(context.get(@templateName))
     Liquid.Template.parse source
 
   findBlocks: (node, blocks={}) ->
-    if node.respondTo(@nodelist)
-      node.nodelist.inject(blocks) (b, node) =>
+    if node.nodelist?
+      b = blocks
+      for node in node.nodelist
         if node instanceof Liquid.Tags.Block
           b[node.name] = node
         else
-          @findBlocks node, b
+          @findBlocks(node, b)
         b
     blocks
 
   isExtending: (template) ->
-    template.root.nodelist.any (node) ->
-      node instanceof Extends
-
+    for node in template.root.nodelist
+      return true if node instanceof Extends
+    false
 
 Liquid.Template.registerTag "extends", Liquid.Tags.Extends
