@@ -17,6 +17,8 @@
 fs = require('fs')
 util = require 'util'
 {exec} = require "child_process"
+{nfcall} = require 'q'
+
 
 #  --------------------------------------------------------------------
 
@@ -44,36 +46,25 @@ task "test", "run tests", ->
 # Build Source
 #
 #
-task 'build:src', 'Build the coffee source', ->
+task 'build:src', 'Build the Liquid source', ->
 
-  #
-  # Build the intermediate js
-  #
-  exec 'coffee -o lib -c src', ($err, $stdout, $stderr) ->
+  start = new Date().getTime()
 
-    util.log $err if $err if $err?
-    util.log $stderr if $stderr if $stderr?
-    util.log $stdout if $stdout if $stdout?
-    util.log 'ok' unless $stdout?
+  nfcall exec, 'coffee -o lib -c src'
 
-    exec 'browserify  lib/liquid.js --debug --standalone Liquid > dist/liquid-0.0.7.dbg.js', ($err, $stdout, $stderr) ->
+  .then ->
+      nfcall exec, 'browserify  lib/liquid.js --debug --standalone Liquid > dist/liquid-0.0.7.dbg.js'
 
-      util.log $err if $err if $err?
-      util.log $stderr if $stderr if $stderr?
-      util.log $stdout if $stdout if $stdout?
-      util.log 'ok' unless $stdout?
+  .then ->
+      nfcall exec, 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid-0.0.7.min.js'
 
-      exec 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid-0.0.7.min.js', ($err, $stdout, $stderr) ->
+  .then ->
+      nfcall exec, 'browserify  lib/liquid.js --standalone Liquid > dist/liquid-0.0.7.js'
 
-        util.log $err if $err if $err?
-        util.log $stderr if $stderr if $stderr?
-        util.log $stdout if $stdout if $stdout?
-        util.log 'ok' unless $stdout?
+  .fail ($err) ->
+      util.error $err
 
-        exec 'browserify  lib/liquid.js --standalone Liquid > dist/liquid-0.0.7.js', ($err, $stdout, $stderr) ->
-
-          util.log $err if $err if $err?
-          util.log $stderr if $stderr if $stderr?
-          util.log $stdout if $stdout if $stdout?
-          util.log 'ok' unless $stdout?
+  .done ($args) ->
+      util.log $text for $text in $args when not /\s*/.test $text
+      util.log "Compiled in #{new Date().getTime() - start} ms"
 
