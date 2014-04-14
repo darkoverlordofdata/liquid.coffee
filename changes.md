@@ -21,6 +21,3 @@ clean up - remove prototype extensions
 ##### 0.0.7
 Add tags: block, extend, break, continue, decrement, increment
 
-##### 0.0.8
-Update description for npm. No functional changes.
-

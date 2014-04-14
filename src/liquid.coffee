@@ -1,6 +1,6 @@
 ###
 
-Copyright (c) 2013 - 2014 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
+Copyright (c) 2013 - 2014 Bruce Davidson darkoverlordofdata@gmail.com
 Copyright (c) 2005, 2006 Tobias Luetke
 
 Permission is hereby granted, free of charge, to any person obtaining

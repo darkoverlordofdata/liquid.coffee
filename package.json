@@ -1,9 +1,10 @@
 {
-  "name": "huginn-liquid",
-  "version": "0.0.8",
+  "name": "liquid.coffee",
+  "version": "0.0.7",
   "description": "Port of Liquid to CoffeeScript",
   "keywords": [
     "Liquid",
+    "templates",
     "coffee-script"
   ],
   "author": "bruce davidson <brucedavidson@darkoverlordofdata.com>",

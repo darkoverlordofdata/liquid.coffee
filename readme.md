@@ -1,20 +1,52 @@
-# Huginn-Liquid
+# Liquid.Coffee
 
-Liquid Template library used by Huginn
+Liquid Coffee Template Engine
 
-A coffee-script port of (liquid 2.2.2) [https://github.com/Shopify/liquid-old]
+Liquid.coffee was ported from a fork of (liquid 2.2.2) [https://github.com/Shopify/liquid-old], after which the following additions were made:
 
-Plus:
+- Liquid Inheritance tags
 
-    LiquidInheritance tags
-        block
-        extend
+    + block
+    + extend
 
-    Liquid3 tags
-        break
-        continue
-        decrement
-        increment
+- Liquid3 tags
+
+    + break
+    + continue
+    + decrement
+    + increment
+
+This library was created as a plugin for huginn and named huginn-liquid.
+It is still available on npmjs.org under that name.
+This site was generated with huginn using liquid.coffee.
+Since then, I've added a browserified distribution under the name liquid.coffee.js,
+which is suitable for use in single page apps. Examples of this usage can be found in the Frodo app.
+
+
+
+## Quick Start
+
+### Install
+
+```bash
+$ cd <project name>
+$ npm install liquid.coffee --save
+```
+
+### Test
+
+```bash
+$ npm install liquid.coffee
+$ npm test
+```
+
+### Make
+
+```bash
+$ npm install liquid.coffee
+$ cake build:src
+```
+
 
 
 

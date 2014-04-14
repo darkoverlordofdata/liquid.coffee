@@ -1,0 +1,60 @@
+#+--------------------------------------------------------------------+
+#| config-dev.yml
+#+--------------------------------------------------------------------+
+#| Copyright DarkOverlordOfData (c) 2013
+#+--------------------------------------------------------------------+
+#|
+#| This file is a part of Huginn
+#|
+#| Huginn is free software; you can copy, modify, and distribute
+#| it under the terms of the MIT License
+#|
+#+--------------------------------------------------------------------+
+#
+# Development configuration
+#
+# Use with huginn serve --dev
+#
+
+name: liquid.coffee
+description: Liquid.Coffee Template Engine
+url: http://localhost/
+port: 0xd16a
+source: ./template
+destination: ./gh-pages/liquid.coffee
+serve:
+  - ./gh-pages
+  - ../../darkoverlordofdata.github.io/master
+
+show_errors: true
+
+marked:
+  gfm: true
+  tables: true
+  breaks: false
+  pedantic: false
+  sanitize: true
+  smartLists: true
+  smartypants: false
+
+#
+#| -------------------------------------------------------------------
+#|  Plugin: Asset Bundler
+#| -------------------------------------------------------------------
+#|
+#
+plugins:
+  - huginn-asset-bundler
+
+asset_bundler:
+  compress:
+    js: true
+    css: true
+  base_path: /assets/
+  shim: /liquid.coffee
+  server_url: //cdn.darkoverlordofdata.com/
+  remove_bundled: false
+  dev: true
+  markup_templates:
+    js: "<script type='text/javascript' src='{{url}}'></script>\n"
+    css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"

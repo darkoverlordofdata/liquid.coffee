@@ -7,7 +7,7 @@
 #| This file is a part of liquid.coffee
 #|
 #| liquid.coffee is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -27,13 +27,14 @@ util = require 'util'
 #
 #
 task "test", "run tests", ->
+
   REPORTER = "nyan"
   exec "NODE_ENV=test
       ./node_modules/.bin/mocha
       --compilers coffee:coffee-script
       --reporter #{REPORTER}
       --require coffee-script
-      --require test/test_helper.coffee
+      --require test/test_helper.js
       --recursive
       ", (err, output) ->
     console.log output
@@ -53,13 +54,13 @@ task 'build:src', 'Build the Liquid source', ->
   nfcall exec, 'coffee -o lib -c src'
 
   .then ->
-      nfcall exec, 'browserify  lib/liquid.js --debug --standalone Liquid > dist/liquid-0.0.7.dbg.js'
+      nfcall exec, 'browserify lib/liquid.js --debug --standalone Liquid > dist/liquid.coffee-0.0.7.dbg.js'
 
   .then ->
-      nfcall exec, 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid-0.0.7.min.js'
+      nfcall exec, 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid.coffee-0.0.7.min.js'
 
   .then ->
-      nfcall exec, 'browserify  lib/liquid.js --standalone Liquid > dist/liquid-0.0.7.js'
+      nfcall exec, 'browserify lib/liquid.js --standalone Liquid > dist/liquid.coffee-0.0.7.js'
 
   .fail ($err) ->
       util.error $err
