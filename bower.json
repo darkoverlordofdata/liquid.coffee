@@ -22,7 +22,9 @@
     "bower_components",
     "test",
     "tests",
-    ".idea"
+    ".idea",
+    "gh-pages"
+    "template"
 
 ]
 }
