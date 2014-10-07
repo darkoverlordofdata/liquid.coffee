@@ -1,0 +1,28 @@
+{
+  "name": "liquid.coffee",
+  "main": "index.js",
+  "version": "0.0.7",
+  "homepage": "https://github.com/darkoverlordofdata/liquid.coffee",
+  "authors": [
+    "darkoverlordofdata <darkoverlordofdata@gmail.com>"
+  ],
+  "description": "Port of Liquid Template Engine",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "Liquid",
+    "templates",
+    "coffee-script"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".idea"
+
+]
+}
