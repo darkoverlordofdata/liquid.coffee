@@ -23,7 +23,7 @@
     "test",
     "tests",
     ".idea",
-    "gh-pages"
+    "gh-pages",
     "template"
 
 ]
