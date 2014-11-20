@@ -27,3 +27,7 @@ update npm documentation
 ##### 0.0.9
 Bugfix - issue#1 'block.name is a single character'
     (thanks to airtonix)
+
+##### 0.1.0
+Breaking change to new npm rep as liquid.coffee
+Effectively renaming huginn-liquid to liquid.coffee.

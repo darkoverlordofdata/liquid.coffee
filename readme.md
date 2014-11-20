@@ -17,10 +17,11 @@ Liquid.coffee was ported from a fork of (liquid 2.2.2) [https://github.com/Shopi
     + increment
 
 This library was created as a plugin for huginn and named huginn-liquid.
-It is still available on npmjs.org under that name.
-This site was generated with huginn using liquid.coffee.
-Since then, I've added a browserified distribution under the name liquid.coffee.js,
-which is suitable for use in single page apps. Examples of this usage can be found in the Frodo app.
+Version 0.0.9 is the last available version on npmjs.org under that name.
+Going forward, this will be liquid.coffee, starting with version 0.1.0
+
+My site, http://darkoverlordofdata.com is generated with huginn using liquid.coffee.
+For bower users, there is also a browserified distribution in the dist folder.
 
 
 
