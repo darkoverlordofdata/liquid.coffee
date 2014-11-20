@@ -25,7 +25,9 @@
   "devDependencies": {
     "chai": "*",
     "mocha": "*",
-    "async": "*"
+    "async": "*",
+    "q": "~1.1.1",
+    "coffee-script": "~1.8.0"
   },
   "repository": "git://github.com/darkoverlordofdata/liquid.coffee",
   "main": "index",

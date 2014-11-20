@@ -21,3 +21,9 @@ clean up - remove prototype extensions
 ##### 0.0.7
 Add tags: block, extend, break, continue, decrement, increment
 
+##### 0.0.8
+update npm documentation
+
+##### 0.0.9
+Bugfix - issue#1 'block.name is a single character'
+    (thanks to airtonix)

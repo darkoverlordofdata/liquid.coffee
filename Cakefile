@@ -54,13 +54,13 @@ task 'build:src', 'Build the Liquid source', ->
   nfcall exec, 'coffee -o lib -c src'
 
   .then ->
-      nfcall exec, 'browserify lib/liquid.js --debug --standalone Liquid > dist/liquid.coffee-0.0.7.dbg.js'
+      nfcall exec, 'browserify lib/liquid.js --debug --standalone Liquid > dist/liquid.coffee-0.0.9.dbg.js'
 
   .then ->
-      nfcall exec, 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid.coffee-0.0.7.min.js'
+      nfcall exec, 'browserify lib/liquid.js --standalone Liquid | uglifyjs > dist/liquid.coffee-0.0.9.min.js'
 
   .then ->
-      nfcall exec, 'browserify lib/liquid.js --standalone Liquid > dist/liquid.coffee-0.0.7.js'
+      nfcall exec, 'browserify lib/liquid.js --standalone Liquid > dist/liquid.coffee-0.0.9.js'
 
   .fail ($err) ->
       util.error $err
