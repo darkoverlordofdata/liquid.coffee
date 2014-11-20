@@ -26,7 +26,7 @@ class Liquid.Tags.BlockDrop extends Liquid.Drop
 
 class Liquid.Tags.Block extends Liquid.Block
 
-  Syntax = /(\w)+/
+  Syntax = ///(#{Liquid.QuotedFragment.source})///
 
   parent: null
   name: ''
