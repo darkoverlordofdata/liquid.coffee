@@ -48,6 +48,16 @@ $ npm install liquid.coffee
 $ cake build:src
 ```
 
+### Use in Hapi
+
+```coffee
+server.views
+  path: config.views
+  engines:
+    tpl: require('liquid.coffee').setPath(config.views)
+
+```
+
 
 
 
