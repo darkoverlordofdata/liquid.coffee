@@ -27,5 +27,5 @@ class Liquid.LocalFileSystem
 
   constructor: (@root) ->
 
-  readTemplateFile: ($template) ->
+  readTemplateFile: ($template) =>
     String(fs.readFileSync(path.resolve(@root, $template)))
