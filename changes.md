@@ -31,3 +31,7 @@ Bugfix - issue#1 'block.name is a single character'
 ##### 0.1.0
 Breaking change to new npm rep as liquid.coffee
 Effectively renaming huginn-liquid to liquid.coffee.
+
+##### 0.1.1
+Oops = extra/liquidView was not required.
+Added setPath & compile to base Liquid object

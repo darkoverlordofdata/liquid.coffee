@@ -50,6 +50,28 @@ module.exports = class Liquid
   @VariableParser             = ///\[[^\]]+\]|#{@VariableSegment.source}+\??///
   @LiteralShorthand           = ///^(?:\{\{\{\s?)(.*?)(?:\s*\}\}\})$///
 
+  #
+  # Setting a path enables a simple disk based file system
+  #
+  @setPath = (path) ->
+    #
+    # Templates load their own extends and includes
+    #
+    Liquid.Template.fileSystem = new Liquid.LocalFileSystem(path)
+    return Liquid
+
+  #
+  # Hapi wants a compile function
+  #
+  @compile = (template, options) ->
+    t = Liquid.Template.parse(template)
+    (context, options) ->
+      t.render(context)
+
+
+
+
+
 require './liquid/version'
 require './liquid/drop'
 require './liquid/errors'
@@ -85,5 +107,4 @@ require './liquid/tags/increment'
 require './liquid/tags/raw'
 require './liquid/tags/unless'
 
-
-
+require './extras/liquidView'
