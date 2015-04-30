@@ -52,9 +52,9 @@ $ cake build:src
 
 ```coffee
 server.views
-  path: config.views
+  path: '/path/to/views'
   engines:
-    tpl: require('liquid.coffee').setPath(config.views)
+    tpl: require('liquid.coffee').setPath('/path/to/views')
 
 ```
 
