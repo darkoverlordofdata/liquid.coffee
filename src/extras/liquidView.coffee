@@ -21,7 +21,8 @@ Liquid = require('../liquid')
 #
 # Example
 # 
-#   app.engine('.liquid', (new require('huginn-liquid')).__express
+#  app.engine('tpl', (new Liquid.LiquidView()).__express)
+
 
 
 class Liquid.LiquidView
