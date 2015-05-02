@@ -21,7 +21,7 @@ Liquid = require('../liquid')
 #
 # Example
 # 
-#   app.engine('.liquid', require('huginn-liquid').__express
+#   app.engine('.liquid', (new require('huginn-liquid')).__express
 
 
 class Liquid.LiquidView
@@ -32,28 +32,27 @@ class Liquid.LiquidView
   #
 
 
-  render: ($source, $data = {}) ->
+  render: (source, data = {}) ->
 
-    if cache[$source]?
-      $template = cache[$source]
+    if cache[source]?
+      template = cache[source]
     else
-      $template = Liquid.Template.parse($source)
+      template = Liquid.Template.parse(source)
 
-    $template.render $data
-
-  renderFile: ($path, $data, $next) ->
-
-    fs.readFile $path, ($err, $source) =>
-      return $next $err if $err?
-      $next null, @render($source, $data)
+    template.render data
 
 
-lv = new Liquid.LiquidView
+  renderFile: (filePath, options, callback) ->
 
-module.exports =
-  __express   : lv.renderFile
-  render      : lv.render
-  renderFile  : lv.renderFile
+    fs.readFile filePath, 'utf-8', (err, next) ->
+      return next(new Error(err)) if (err)
+      template = Liquid.Template.parse(content)
+      return next(null, template.render(options))
 
+  __express: (filePath, options, callback) ->
 
+    fs.readFile filePath, 'utf-8', (err, next) ->
+      return next(new Error(err)) if (err)
+      template = Liquid.Template.parse(content)
+      return next(null, template.render(options))
 
