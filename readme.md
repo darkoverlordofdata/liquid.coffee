@@ -57,7 +57,15 @@ server.views
     tpl: require('liquid.coffee').setPath('/path/to/views')
 
 ```
+### Use in expressjs
 
+```coffee
+Liquid = require('liquid.coffee')
+
+app.set "view engine", "tpl"
+app.engine 'tpl', (new Liquid.LiquidView()).__express
+
+```
 
 
 
