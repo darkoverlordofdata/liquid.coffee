@@ -35,3 +35,5 @@ Effectively renaming huginn-liquid to liquid.coffee.
 ##### 0.1.1
 Oops = extra/liquidView was not required.
 Added setPath & compile to base Liquid object
+fixed LiquidView
+added example folder
