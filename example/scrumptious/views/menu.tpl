@@ -125,13 +125,13 @@
     </div>
 </div>
 
-
+{% raw %}
 <script type="x-mustache-template" id="meal_list_tmpl">
     {{#.}}
     <li><a href="#meal-details" data-name="{{ title }}" data-transition="slide"><img src="images/meals/{{ id }}.png"></img>{{ title }}</a></li>
     {{/.}}
 </script>
-{% raw %}
+
 <script type="x-mustache-template" id="selected_meal_tmpl">
     <h3>{{ title }}</h3>
     <br>
