@@ -42,16 +42,17 @@ class Liquid.LiquidView
     template.render data
 
 
-  renderFile: (filePath, options, callback) ->
+  renderFile: (filePath, options, next) ->
 
-    fs.readFile filePath, 'utf-8', (err, next) ->
+    fs.readFile filePath, 'utf-8', (err, content) ->
       return next(new Error(err)) if (err)
       template = Liquid.Template.parse(content)
       return next(null, template.render(options))
 
-  __express: (filePath, options, callback) ->
 
-    fs.readFile filePath, 'utf-8', (err, next) ->
+  __express: (filePath, options, next) ->
+
+    fs.readFile filePath, 'utf-8', (err, content) ->
       return next(new Error(err)) if (err)
       template = Liquid.Template.parse(content)
       return next(null, template.render(options))

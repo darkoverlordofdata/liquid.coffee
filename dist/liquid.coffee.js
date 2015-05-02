@@ -27,8 +27,8 @@
       return template.render(data);
     };
 
-    LiquidView.prototype.renderFile = function(filePath, options, callback) {
-      return fs.readFile(filePath, 'utf-8', function(err, next) {
+    LiquidView.prototype.renderFile = function(filePath, options, next) {
+      return fs.readFile(filePath, 'utf-8', function(err, content) {
         var template;
         if (err) {
           return next(new Error(err));
@@ -38,8 +38,8 @@
       });
     };
 
-    LiquidView.prototype.__express = function(filePath, options, callback) {
-      return fs.readFile(filePath, 'utf-8', function(err, next) {
+    LiquidView.prototype.__express = function(filePath, options, next) {
+      return fs.readFile(filePath, 'utf-8', function(err, content) {
         var template;
         if (err) {
           return next(new Error(err));
