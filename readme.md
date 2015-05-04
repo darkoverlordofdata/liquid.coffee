@@ -60,7 +60,7 @@ server.views
 ### Use in expressjs
 
 ```coffee
-Liquid = require('liquid.coffee')
+Liquid = require('liquid.coffee').setPath('/path/to/views')
 
 app.set "view engine", "tpl"
 app.engine 'tpl', (new Liquid.LiquidView()).__express
