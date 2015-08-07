@@ -45,7 +45,7 @@ $ npm test
 
 ```bash
 $ npm install liquid.coffee
-$ cake build:src
+$ npm run build
 ```
 
 ### Use in Hapi
@@ -67,6 +67,12 @@ app.engine 'tpl', (new Liquid.LiquidView()).__express
 
 ```
 
+### Example
+```bash
+$ cd liquid.coffee/example
+$ npm install
+$ coffee app.coffee
+```
 
 
 ## License

@@ -47,7 +47,7 @@ task "test", "run tests", ->
 # Build Source
 #
 #
-task 'build:src', 'Build the Liquid source', ->
+task 'build', 'Build the Liquid source', ->
 
   start = new Date().getTime()
 
