@@ -1,6 +1,5 @@
 # Liquid.Coffee
 
-### Status
 [![Build Status](https://travis-ci.org/darkoverlordofdata/liquid.coffee.svg?branch=master)](https://travis-ci.org/darkoverlordofdata/liquid.coffee)
 
 Liquid Coffee Template Engine
