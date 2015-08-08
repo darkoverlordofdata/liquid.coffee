@@ -6,3 +6,4 @@ before_script:
 before_install:
   - npm install coffee-script
   - npm install -g browserify
+  - npm install -g uglifyjs
