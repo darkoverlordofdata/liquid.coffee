@@ -13,6 +13,10 @@
 #
 # Cakefile
 #
+# npm tasks:
+#
+# build   - compile app to dist
+# test    - run tests
 
 fs = require('fs')
 util = require 'util'
