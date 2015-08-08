@@ -1,5 +1,8 @@
 # Liquid.Coffee
 
+### Status
+[![Build Status](https://travis-ci.org/darkoverlordofdata/liquid.coffee.svg?branch=master)](https://travis-ci.org/darkoverlordofdata/liquid.coffee)
+
 Liquid Coffee Template Engine
 
 Liquid.coffee was ported from a fork of (liquid 2.2.2) [https://github.com/Shopify/liquid-old], after which the following additions were made:
