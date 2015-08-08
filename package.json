@@ -18,7 +18,7 @@
     "strftime": "~0.7.0"
   },
   "scripts": {
-    "clean": "rimraf build/*",
+    "clean": "rimraf dist/*",
     "build": "cake build",
     "prebuild": "npm run clean",
     "test": "cake test"
@@ -27,7 +27,7 @@
   "devDependencies": {
     "async": "*",
     "chai": "*",
-    "coffee-script": "~1.8.0",
+    "coffee-script": "*",
     "gulp": "^3.9.0",
     "gulp-shell": "^0.4.2",
     "mocha": "*",
