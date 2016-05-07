@@ -39,4 +39,4 @@ fixed LiquidView
 added example folder
 
 ##### 0.1.2
-For loop - treat object as array of {name:*,value:*} 
+For loop - treat object as array of {key:*,value:*} 
