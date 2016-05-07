@@ -74,13 +74,16 @@ class Liquid.Tags.For extends Liquid.Block
       throw new Liquid.SyntaxError("Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]")
     super tag, markup, tokens
 
-
   render: (context) ->
     context.registers.for = {} unless context.registers.for?
 
     collection = context.get(@collectionName)
 
-    return '' unless Array.isArray(collection)
+    #return '' unless Array.isArray(collection)
+    unless Array.isArray(collection)
+        console.log     collection
+        collection = ({key:k,value:v} for k,v of collection)
+        console.log collection
 
     from = if @attributes['offset'] is 'continue'
      context.registers.for[@name]

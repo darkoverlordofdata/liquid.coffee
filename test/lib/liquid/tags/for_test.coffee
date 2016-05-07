@@ -9,3 +9,8 @@ describe 'Liquid for tag ', ->
     render("{% for item in (1..3) %} {{ forloop.first }} {% endfor %}").should.equal " true  false  false "
     render("{% for item in (1..3) %} {{ forloop.last }} {% endfor %}").should.equal " false  false  true "
 
+
+  it "should treat hash as an array", ->
+
+    tmpl = Liquid.Template.parse("{% for item in data %}{{ item.key }} is {{ item.value }} {% endfor %}")
+    tmpl.render(data: {name:"fred", job:"developer"}).should.equal "name is fred job is developer "

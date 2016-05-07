@@ -37,3 +37,6 @@ Oops = extra/liquidView was not required.
 Added setPath & compile to base Liquid object
 fixed LiquidView
 added example folder
+
+##### 0.1.2
+For loop - treat object as array of {name:*,value:*} 
