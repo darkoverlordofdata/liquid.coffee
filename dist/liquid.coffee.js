@@ -1903,7 +1903,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
       collection = context.get(this.collectionName);
       if (!Array.isArray(collection)) {
-        console.log(collection);
         collection = (function() {
           var results;
           results = [];
@@ -1916,7 +1915,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           }
           return results;
         })();
-        console.log(collection);
       }
       from = this.attributes['offset'] === 'continue' ? context.registers["for"][this.name] : context.get(this.attributes['offset']);
       limit = context.get(this.attributes['limit']);
@@ -2835,7 +2833,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 },{}],36:[function(require,module,exports){
 module.exports={
   "name": "liquid.coffee",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Port of Liquid to CoffeeScript",
   "keywords": [
     "Liquid",

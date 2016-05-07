@@ -81,9 +81,7 @@ class Liquid.Tags.For extends Liquid.Block
 
     #return '' unless Array.isArray(collection)
     unless Array.isArray(collection)
-        console.log     collection
         collection = ({key:k,value:v} for k,v of collection)
-        console.log collection
 
     from = if @attributes['offset'] is 'continue'
      context.registers.for[@name]
