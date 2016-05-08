@@ -14,3 +14,12 @@ describe 'Liquid for tag ', ->
 
     tmpl = Liquid.Template.parse("{% for item in data %}{{ item.key }} is {{ item.value }} {% endfor %}")
     tmpl.render(data: {name:"fred", job:"developer"}).should.equal "name is fred job is developer "
+
+
+  it "should nest for loops", ->
+    # 
+    
+    src = "{% for outer in (1..4) %}{% for inner in (1..2) %}({{ forloop.index }}/{{ forloop.length }}),{% endfor %}{% endfor %}"
+    
+    render(src).should.eq "(1/2),(2/2),(1/2),(2/2),(1/2),(2/2),(1/2),(2/2),"
+  

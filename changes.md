@@ -40,3 +40,6 @@ added example folder
 
 ##### 0.1.3
 For loop - treat object as array of {key:*,value:*} 
+
+##### 0.1.4
+Context - fix scope stack order 

@@ -88,7 +88,8 @@ class Liquid.Context
 
   # Push new local scope on the stack. use <tt>Context#stack</tt> instead
   push: (newScope = {}) ->
-    @scopes.unshift newScope
+    #@scopes.unshift newScope
+    @scopes.push newScope
     throw new Liquid.StackLevelError("Nesting too deep") if @scopes.length > 100
 
   # Merge a hash of variables in the current local scope
@@ -99,7 +100,8 @@ class Liquid.Context
   # Pop from the stack. use <tt>Context#stack</tt> instead
   pop: ->
     throw new Liquid.ContextError() if @scopes.length is 1
-    @scopes.shift()
+    #@scopes.shift()
+    @scopes.pop()
 
   # Pushes a new local scope on the stack, pops it at the end of the block
   #

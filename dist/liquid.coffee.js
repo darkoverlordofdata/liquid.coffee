@@ -570,7 +570,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       if (newScope == null) {
         newScope = {};
       }
-      this.scopes.unshift(newScope);
+      this.scopes.push(newScope);
       if (this.scopes.length > 100) {
         throw new Liquid.StackLevelError("Nesting too deep");
       }
@@ -590,7 +590,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       if (this.scopes.length === 1) {
         throw new Liquid.ContextError();
       }
-      return this.scopes.shift();
+      return this.scopes.pop();
     };
 
     Context.prototype.stack = function($yield, newScope) {
@@ -2833,7 +2833,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 },{}],36:[function(require,module,exports){
 module.exports={
   "name": "liquid.coffee",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Port of Liquid to CoffeeScript",
   "keywords": [
     "Liquid",

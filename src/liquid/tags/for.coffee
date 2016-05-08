@@ -103,27 +103,28 @@ class Liquid.Tags.For extends Liquid.Block
 
     # Store our progress through the collection for the continue flag
     context.registers.for[@name] = from + segment.length
-
     context.stack =>
       #segment.forEach (item, index) =>
       for item, index in segment
         context.set @variableName, item
         context.set 'forloop',
-          name    : @name
-          length  : length
-          index   : index + 1
-          index0  : index
-          rindex  : length - index
-          rindex0 : length - index - 1
-          first   : (index is 0)
-          last    : (index is length - 1)
+            name    : @name
+            length  : length
+            index   : index + 1
+            index0  : index
+            rindex  : length - index
+            rindex0 : length - index - 1
+            first   : (index is 0)
+            last    : (index is length - 1)
 
         result += @renderAll(@nodelist, context)
         # Handle any interrupts if they exist.
         if context.hasInterrupt()
-          interrupt = context.popInterrupt()
-          break if interrupt instanceof Liquid.BreakInterrupt
-          continue if interrupt instanceof Liquid.ContinueInterrupt
+            interrupt = context.popInterrupt()
+            break if interrupt instanceof Liquid.BreakInterrupt
+            continue if interrupt instanceof Liquid.ContinueInterrupt
+            #segment.length = 0 if interrupt instanceof Liquid.BreakInterrupt
+            #return if interrupt instanceof Liquid.ContinueInterrupt
 
 
     result
