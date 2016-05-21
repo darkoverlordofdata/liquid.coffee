@@ -43,3 +43,6 @@ For loop - treat object as array of {key:*,value:*}
 
 ##### 0.1.4
 Context - fix scope stack order 
+
+##### 0.1.6
+increment should start at 0, not 1

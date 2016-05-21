@@ -2204,8 +2204,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
 
     Increment.prototype.render = function(context) {
-      var base, name, value;
-      value = (base = context.scopes[0])[name = this.variable] || (base[name] = 0);
+      var value;
+      if (context.scopes[0][this.variable] != null) {
+        value = context.scopes[0][this.variable];
+      } else {
+        value = context.scopes[0][this.variable] = -1;
+      }
       value = value + 1;
       context.scopes[0][this.variable] = value;
       return value.toString();
@@ -2833,7 +2837,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 },{}],36:[function(require,module,exports){
 module.exports={
   "name": "liquid.coffee",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Port of Liquid to CoffeeScript",
   "keywords": [
     "Liquid",
