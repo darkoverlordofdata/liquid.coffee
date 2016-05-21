@@ -22,9 +22,19 @@ class Liquid.Tags.Increment extends Liquid.Tag
     super tagName, markup, tokens
 
   render: (context) ->
-    value = context.scopes[0][@variable] or= 0
+    if context.scopes[0][@variable]? 
+      value = context.scopes[0][@variable]
+    else
+      value = context.scopes[0][@variable] = -1
     value = value + 1
     context.scopes[0][@variable] = value
     value.toString()
+
+
+  
+    # value = context.scopes[0][@variable] or= 0
+    # value = value + 1
+    # context.scopes[0][@variable] = value
+    # value.toString()
 
 Liquid.Template.registerTag "increment", Liquid.Tags.Increment
