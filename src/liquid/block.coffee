@@ -67,13 +67,19 @@ class Liquid.Block extends Liquid.Tag
   endTag: ->
 
   unknownTag: (tag, params, tokens) ->
-    switch tag
-      when "else"
-        throw new SyntaxError("#{@blockName} tag does not expect else tag")
-      when "end"
-        throw new SyntaxError("'end' is not a valid delimiter for #{@blockName} tags. use #{@blockDelimiter}")
-      else
-        throw new SyntaxError("Unknown tag '#{tag}'")
+    if tag is "else"
+      throw new SyntaxError("#{@blockName} tag does not expect else tag")
+    else if tag is "end"
+      throw new SyntaxError("'end' is not a valid delimiter for #{@blockName} tags. use #{@blockDelimiter}")
+    else
+      throw new SyntaxError("Unknown tag '#{tag}'")
+    # switch tag
+    #   when "else"
+    #     throw new SyntaxError("#{@blockName} tag does not expect else tag")
+    #   when "end"
+    #     throw new SyntaxError("'end' is not a valid delimiter for #{@blockName} tags. use #{@blockDelimiter}")
+    #   else
+    #     throw new SyntaxError("Unknown tag '#{tag}'")
 
   createVariable: (token) ->
     if content = token.match(ContentOfVariable)

@@ -46,3 +46,7 @@ Context - fix scope stack order
 
 ##### 0.1.6
 increment should start at 0, not 1
+
+##### 0.1.7
+throw inside of switch/case results in unreachable code error from typescript compiler
+coffeescript 1.11.1
