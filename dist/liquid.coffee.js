@@ -501,6 +501,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   module.exports = Liquid = (function() {
     function Liquid() {}
 
+    Liquid.Liquid = Liquid;
+
     Liquid.FilterSeparator = /\|/;
 
     Liquid.ArgumentSeparator = ',';
@@ -3246,7 +3248,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 },{}],39:[function(require,module,exports){
 module.exports={
   "name": "liquid.coffee",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Port of Liquid to CoffeeScript",
   "keywords": [
     "Liquid",

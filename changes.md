@@ -50,3 +50,7 @@ increment should start at 0, not 1
 ##### 0.1.7
 throw inside of switch/case results in unreachable code error from typescript compiler
 coffeescript 1.11.1
+
+##### 0.1.8
+add self-reference for amd define
+add typescript d.ts
