@@ -34,6 +34,7 @@ class Liquid.Tags.Cycle extends Liquid.Tag
 
   constructor: (tag, markup, tokens) ->
 
+    super tag, markup, tokens
     if $ = markup.match(NamedSyntax)
       @variables = @variablesFromString($[2])
       @name = $[1]
@@ -42,7 +43,6 @@ class Liquid.Tags.Cycle extends Liquid.Tag
       @name = "'#{@variables.toString()}'"
     else
       throw new Liquid.SyntaxError("Syntax error in 'cycle' - Valid syntax: cycle [name :] var [, var2, var3 ...]")
-    super tag, markup, tokens
 
   render: (context) ->
     context.registers.cycle or= {}

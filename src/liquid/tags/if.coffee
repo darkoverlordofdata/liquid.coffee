@@ -33,10 +33,10 @@ class Liquid.Tags.If extends Liquid.Block
   ExpressionsAndOperators = ///(?:\b(?:\s?and\s?|\s?or\s?)\b|(?:\s*(?!\b(?:\s?and\s?|\s?or\s?)\b)(?:#{Liquid.StrictQuotedFragment.source}|\S+)\s*)+)///g
 
   constructor: (tag, markup, tokens) ->
+    super tag, markup, tokens
     @nodelist = []
     @blocks = []
     @pushBlock "if", markup
-    super tag, markup, tokens
 
   unknownTag: (tag, markup, tokens) ->
     if tag in ["elsif", "else"]

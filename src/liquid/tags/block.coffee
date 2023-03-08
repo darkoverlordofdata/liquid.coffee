@@ -19,8 +19,9 @@ Liquid = require('../../liquid')
 
 class Liquid.Tags.BlockDrop extends Liquid.Drop
 
-  constructor: (@block) ->
-    Object.defineProperty @, 'super', get: -> @block.callSuper @context
+  # constructor: (@block) ->
+  #   super 
+  #   Object.defineProperty @, 'super', get: -> @block.callSuper @context
 
 
 
@@ -29,15 +30,16 @@ class Liquid.Tags.Block extends Liquid.Block
   Syntax = ///(#{Liquid.QuotedFragment.source})///
 
   parent: null
-  name: ''
+  name: ""
 
   constructor: (tagName, markup, tokens) ->
+    super tagName, markup, tokens 
+    #if tokens?
     if $ = markup.match(Syntax)
       @name = $[1]
     else
       throw new Liquid.SyntaxError("Syntax Error in 'block' - Valid syntax: block [name]")
 
-    super tagName, markup, tokens if tokens?
 
   render: (context) ->
     context.stack =>

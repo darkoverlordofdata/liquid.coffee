@@ -18,8 +18,8 @@ Liquid = require('../../liquid')
 class Liquid.Tags.Decrement extends Liquid.Tag
 
   constructor: (tagName, markup, tokens) ->
-    @variable = markup.trim()
     super tagName, markup, tokens
+    @variable = markup.trim()
 
   render: (context) ->
     value = context.scopes[0][@variable] or= 0

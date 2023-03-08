@@ -23,11 +23,11 @@ class Liquid.Block extends Liquid.Tag
   ContentOfVariable = ///^#{Liquid.VariableStart.source}(.*)#{Liquid.VariableEnd.source}$///
 
   constructor: (tagName, markup, tokens) ->
+    super tagName, markup, tokens
     @blockName = tagName
     @blockDelimiter ="end#{@blockName}"
-    super tagName, markup, tokens
 
-  parse: (tokens) ->
+  parse: (tokens = []) ->
     @nodelist or= []
     @nodelist.length = 0
 
@@ -84,6 +84,7 @@ class Liquid.Block extends Liquid.Tag
   createVariable: (token) ->
     if content = token.match(ContentOfVariable)
       new Liquid.Variable(content[1])
+      console.log("Variable found: '#{content[1]}' ")
     else
       throw new Liquid.SyntaxError("Variable '#{token}' was not properly terminated with regexp: #{Liquid.VariableEnd.source} ")
 
@@ -107,7 +108,7 @@ class Liquid.Block extends Liquid.Tag
     output.join('')
 
   assertMissingDelimitation: ->
-    throw new Liquid.SyntaxError("#{block_name} tag was never closed")
+    throw new Liquid.SyntaxError("#{@blockName} tag was never closed")
 
 
 

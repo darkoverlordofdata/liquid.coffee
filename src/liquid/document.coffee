@@ -19,6 +19,7 @@ class Liquid.Document extends Liquid.Block
 
   # we don't need markup to open this block
   constructor: (tokens) ->
+    super()
     # There isn't a real delimter
     @blockDelimiter = []
     @parse tokens

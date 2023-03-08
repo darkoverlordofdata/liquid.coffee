@@ -21,13 +21,13 @@ class Liquid.Tags.Case extends Liquid.Block
   WhenSyntax  =  ///(#{Liquid.StrictQuotedFragment.source})(?:(?:\s+or\s+|\s*\,\s*)(#{Liquid.StrictQuotedFragment.source}.*))?///
 
   constructor: (tagName, markup, tokens) ->
+    super tagName, markup, tokens
     @blocks = []
     @nodelist = []
     if $ = markup.match(Syntax)
       @left = $[1]
     else
       throw new Liquid.SyntaxError("Syntax error in 'case' - Valid syntax: case [condition]")
-    super tagName, markup, tokens
 
   unknownTag: (tag, markup, tokens) ->
     @nodelist = []

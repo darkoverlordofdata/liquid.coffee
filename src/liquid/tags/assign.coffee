@@ -29,12 +29,12 @@ class Liquid.Tags.Assign extends Liquid.Tag
 
 
   constructor: (tagName, markup, tokens) ->
+    super tagName, markup, tokens
     if $ = markup.match(Syntax)
       @to = $[1]
       @from = $[2]
     else
       throw new Liquid.SyntaxError("Syntax error in 'assign' - Valid syntax: assign [var] = [source]")
-    super tagName, markup, tokens
 
 
   render: (context) ->

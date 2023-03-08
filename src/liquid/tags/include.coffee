@@ -20,6 +20,7 @@ class Include extends Liquid.Tag
   Syntax = ///(#{Liquid.StrictQuotedFragment.source})(\s+(?:with|for)\s+(#{Liquid.StrictQuotedFragment.source}))?///
 
   constructor: (tag, markup, tokens) ->
+    super tag, markup, tokens
     if $ = markup.match(Syntax)
 
       @templateName = $[1]
@@ -33,7 +34,6 @@ class Include extends Liquid.Tag
     else
       throw new Liquid.SyntaxError("Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]")
 
-    super tag, markup, tokens
 
 
   render: (context) ->

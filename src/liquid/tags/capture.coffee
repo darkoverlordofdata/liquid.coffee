@@ -31,11 +31,11 @@ class Liquid.Tags.Capture extends Liquid.Block
   Syntax = /(\w+)/
 
   constructor: (tagName, markup, tokens) ->
+    super tagName, markup, tokens
     if $ = markup.match(Syntax)
       @to = $[1]
     else
       throw new Liquid.SyntaxError("Syntax error in 'capture' - Valid syntax: capture [var]")
-    super tagName, markup, tokens
 
   render: (context) ->
     output = super(context)

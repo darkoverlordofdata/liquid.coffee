@@ -62,6 +62,7 @@ class Liquid.Tags.For extends Liquid.Block
 
 
   constructor: (tag, markup, tokens) ->
+    super tag, markup, tokens
     if $ = markup.match(Syntax)
       @variableName = $[1]
       @collectionName = $[2]
@@ -72,7 +73,6 @@ class Liquid.Tags.For extends Liquid.Block
         @attributes[key] = value
     else
       throw new Liquid.SyntaxError("Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]")
-    super tag, markup, tokens
 
   render: (context) ->
     context.registers.for = {} unless context.registers.for?

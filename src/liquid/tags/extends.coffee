@@ -25,11 +25,11 @@ class Liquid.Tags.Extends  extends Liquid.Block
 
   constructor: (tagName, markup, tokens) ->
 
+    super()
     if ($ = markup.match(Syntax))
       @templateName = $[1]
     else
       throw new Liquid.SyntaxError("Syntax Error in 'extends' - Valid syntax: extends [template]")
-    super
 
     m = {}
     for node in @nodelist
