@@ -32,6 +32,7 @@ class Liquid.Template
 
   @fileSystem = new Liquid.BlankFileSystem()
   @tags = {}
+  @variables = { }
   @registerTag = (name, klass) ->
     Liquid.Template.tags[name] = klass
 

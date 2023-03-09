@@ -83,8 +83,9 @@ class Liquid.Block extends Liquid.Tag
 
   createVariable: (token) ->
     if content = token.match(ContentOfVariable)
-      new Liquid.Variable(content[1])
-      console.log("Variable found: '#{content[1]}' ")
+      variable = new Liquid.Variable(content[1])
+      Liquid.Template.variables[variable.name] = variable
+      # console.log("Variable found: '#{variable.name}' | #{variable.name} ")
     else
       throw new Liquid.SyntaxError("Variable '#{token}' was not properly terminated with regexp: #{Liquid.VariableEnd.source} ")
 
